@@ -15,7 +15,8 @@ export default function LoginPage() {
   const [buttonDisabled, setButtonDisabled] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
-    const onLogin = async () => {
+    const onLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
       try {
         setLoading(true);
         const response = await axios.post("/api/users/login", user);
@@ -71,6 +72,11 @@ export default function LoginPage() {
                 Login
               </button>
             </form>
+            <p className="mt-4 text-center text-sm text-gray-600">
+          <Link href="/forgot-password" className="text-indigo-500 hover:underline">
+            Forgot Password?
+          </Link>
+        </p>
             <p className="mt-4 text-center text-sm text-gray-600">
         Already have an account?{' '}
         <Link

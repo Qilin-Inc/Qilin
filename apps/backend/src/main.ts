@@ -2,10 +2,11 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { SocketService } from './services/socket';
+import { prisma } from './utils/primsa';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   const socketService = app.get(SocketService);
   socketService.io.attach(app.getHttpServer());
   socketService.initListeners();
@@ -18,6 +19,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
+  console.log("Running 0");
   
   await app.listen(3001);
 }

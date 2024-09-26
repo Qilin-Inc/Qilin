@@ -17,4 +17,6 @@ model users {
   username          String    @unique(map: "username_1")
   verifyToken       String?
   verifyTokenExpiry DateTime? @db.Date
+  forgotPasswordToken String?
+  forgotPasswordTokenExpiry DateTime? @db.Date
 }

@@ -17,7 +17,7 @@ export default function SignupPage() {
     const onSignup = async () => {
       try {
         setLoading(true);
-        const response = await axios.post("http://localhost:4000/users/signup", user);
+        const response = await axios.post("/api/users/signup", user);
         console.log("Signup success", response.data);
         router.push("/");
       } catch (error: any) {
@@ -41,7 +41,7 @@ export default function SignupPage() {
           <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
             <h1>{loading ? "Processing" : "Signup"}</h1>
             <h1 className="text-4xl font-bold text-center mb-6 text-black">Signup</h1>
-            <form onSubmit={onSignup} className="space-y-4">
+            <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-black">Email</label>
                 <input
@@ -76,7 +76,8 @@ export default function SignupPage() {
                 />
               </div>
               <button
-                type="submit"
+                onClick={onSignup}
+                type="button"
                 className="w-full bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600 transition duration-300"
               >
                 {buttonDisabled ? "No Signup" : "Signup"}

@@ -40,7 +40,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     }, []);
     
     useEffect(() => {
-        const _socket = io('http://localhost:3001');
+        const _socket = io('http://localhost:4000');
         _socket.on('chat:message', onMessage);
         setSocket(_socket);
         console.log('Socket connected'); // Debugging log

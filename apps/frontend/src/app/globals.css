@@ -12,6 +12,13 @@ body {
   }
 }
 
+/* styles.css */
+.blur {
+  backdrop-filter: blur(8px); /* Adjust the blur intensity */
+  -webkit-backdrop-filter: blur(8px); /* For Safari */
+}
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;

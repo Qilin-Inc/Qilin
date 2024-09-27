@@ -5,6 +5,14 @@ import { SocketService } from './services/socket';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.enableCors(
+    {
+      origin: '*',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      allowedHeaders: 'Content-Type, Accept',
+    },
+  );
   
   const socketService = app.get(SocketService);
   socketService.io.attach(app.getHttpServer());
@@ -16,6 +24,8 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('LFT')
     .build();
+
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
   

@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { SocketService } from './services/socket';
+import { prisma } from './utils/prisma';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,7 +14,7 @@ async function bootstrap() {
       allowedHeaders: 'Content-Type, Accept',
     },
   );
-  
+
   const socketService = app.get(SocketService);
   socketService.io.attach(app.getHttpServer());
   socketService.initListeners();
@@ -28,7 +29,8 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
+  console.log("Running 0");
   
-  await app.listen(3001);
+  await app.listen(4000);
 }
 bootstrap();

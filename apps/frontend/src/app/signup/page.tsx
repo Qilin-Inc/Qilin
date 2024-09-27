@@ -22,6 +22,7 @@ export default function SignupPage() {
         router.push("/");
       } catch (error: any) {
         console.log("Signup failed", error.message);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -40,7 +41,7 @@ export default function SignupPage() {
           <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
             <h1>{loading ? "Processing" : "Signup"}</h1>
             <h1 className="text-4xl font-bold text-center mb-6 text-black">Signup</h1>
-            <form onSubmit={onSignup} className="space-y-4">
+            <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-black">Email</label>
                 <input
@@ -75,7 +76,8 @@ export default function SignupPage() {
                 />
               </div>
               <button
-                type="submit"
+                onClick={onSignup}
+                type="button"
                 className="w-full bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600 transition duration-300"
               >
                 {buttonDisabled ? "No Signup" : "Signup"}

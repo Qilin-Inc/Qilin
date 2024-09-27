@@ -19,4 +19,19 @@ model users {
   verifyTokenExpiry DateTime? @db.Date
   forgotPasswordToken String?
   forgotPasswordTokenExpiry DateTime? @db.Date
+  profileDescription  String?
+  friends             String[]   @db.ObjectId
+  friendsCount        Int       @default(0)
+  valorantAccount     valorantAccount? @relation(fields: [valorantAccountId], references: [id])
+  valorantAccountId   String? @db.ObjectId
+}
+
+model valorantAccount {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  username          String
+  tag               String
+  puuid             String
+  region            String?
+  accountLevel      Int?
+  users             users[]
 }

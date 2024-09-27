@@ -167,9 +167,9 @@ const LeagueDashboard = () => {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold">{player.premium ? player.stats : <span className="blur-sm">Hidden</span>}</p>
-                      <p className="text-green-400">{player.premium ? player.winrate : <span className="blur-sm">Hidden</span>}</p>
-                      <p className="text-gray-400">{player.premium ? player.kda : <span className="blur-sm">Hidden</span>}</p>
+                      <p className="font-bold">{isPremium ? player.stats : <span className="blur-sm">Hidden</span>}</p>
+                      <p className="text-green-400">{isPremium ? player.winrate : <span className="blur-sm">Hidden</span>}</p>
+                      <p className="text-gray-400">{isPremium ? player.kda : <span className="blur-sm">Hidden</span>}</p>
                     </div>
                   </CardContent>
                 </Card>

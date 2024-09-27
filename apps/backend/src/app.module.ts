@@ -14,5 +14,6 @@ import { ConfigModule } from '@nestjs/config';
   imports: [ConfigModule.forRoot({ isGlobal: true })],
   controllers: [AppController, VerifyemailController, UsersController, DashboardController],
   providers: [AppService, SocketService, VerifyemailService, UsersService, DashboardService],
+
 })
 export class AppModule {}

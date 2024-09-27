@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChevronDown, Search, Settings, Trophy, Users } from 'lucide-react';
+import { ChevronDown, Search, Settings, Trophy, Users, HelpCircle, AlertCircle } from 'lucide-react';
 import axios from 'axios';
 
 const LeagueDashboard = () => {
@@ -20,23 +20,26 @@ const LeagueDashboard = () => {
     kda: string;
     place: number;
   }
-
-  const [leaderboard, setLeaderboard] = useState<Player[]>([
-    { place: 1, name: 'Shroud', stats: '98', winrate: '70%', kda: '2.5', rank: 'Radiant' },
-    { place: 2, name: 'TenZ', stats: '92', winrate: '65%', kda: '3.1', rank: 'Immortal' },
-    { place: 3, name: 'SicK', stats: '88', winrate: '63%', kda: '2.7', rank: 'Immortal' },
-    { place: 4, name: 'Asuna', stats: '85', winrate: '60%', kda: '2.4', rank: 'Diamond' },
-  ]);
-
+  
+  const [leaderboard, setLeaderboard] = useState<Player[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isPremium, setIsPremium] = useState(false); // Control premium user access
 
-  // Toggle premium status (for demonstration purposes)
-  const togglePremium = () => setIsPremium(!isPremium);
+  // Fetch leaderboard data from NestJS backend
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/users'); // Adjust the URL to your backend
+        setLeaderboard(response.data);
+      } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+      }
+    };
+
+    fetchLeaderboard();
+  }, []);
 
   // Filter the leaderboard by search term
-  const filteredLeaderboard = leaderboard.filter(player =>
-
+  const filteredLeaderboard = leaderboard.filter(player => 
     player.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -82,7 +85,12 @@ const LeagueDashboard = () => {
               <p className="text-gray-400">@Top player</p>
             </div>
           </div>
-          
+          <div className="flex items-center space-x-2 text-sm">
+            <span className="text-gray-400">Leaderboard resets in</span>
+            {[2, 1, 5, 2].map((num, index) => (
+              <span key={index} className="bg-gray-800 px-2 py-1 rounded font-mono">{num}</span>
+            ))}
+          </div>
         </div>
 
         {/* Search */}
@@ -167,9 +175,9 @@ const LeagueDashboard = () => {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold">{player.premium ? player.stats : <span className="blur-sm">Hidden</span>}</p>
-                      <p className="text-green-400">{player.premium ? player.winrate : <span className="blur-sm">Hidden</span>}</p>
-                      <p className="text-gray-400">{player.premium ? player.kda : <span className="blur-sm">Hidden</span>}</p>
+                      <p className="font-bold">{player.stats}</p>
+                      <p className="text-green-400">{player.winrate}</p>
+                      <p className="text-gray-400">{player.kda}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -195,23 +203,14 @@ const LeagueDashboard = () => {
               <TableRow key={index} className="bg-gray-800">
                 <TableCell>{player.place}</TableCell>
                 <TableCell className="font-medium">{player.name}</TableCell>
-                {/* Blurred out information for non-premium users */}
-                <TableCell>{isPremium ? player.stats : <span className="blur-sm">###</span>}</TableCell>
-                <TableCell>{isPremium ? player.winrate : <span className="blur-sm">###</span>}</TableCell>
-                <TableCell>{isPremium ? player.kda : <span className="blur-sm">###</span>}</TableCell>
+                <TableCell>{player.stats}</TableCell>
+                <TableCell>{player.winrate}</TableCell>
+                <TableCell>{player.kda}</TableCell>
                 <TableCell>{player.rank}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-
-        {!isPremium && (
-          <div className="text-center mt-6">
-            <p className="text-gray-400">Unlock full stats by upgrading to a premium account!</p>
-            <Button className="mt-2 bg-orange-500">Upgrade to Premium</Button>
-          </div>
-        )}
-
       </div>
     </div>
   );

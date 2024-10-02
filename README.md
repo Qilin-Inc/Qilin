@@ -1,81 +1,85 @@
-# Turborepo starter
+# LFT: League Finder & Team Builder
 
-This is an official starter Turborepo.
+LFT revolutionizes team formation in competitive gaming. Our platform seamlessly connects players based on skill level, recent performance, and compatibility, using advanced algorithms including the Glicko-2 rating system.
 
-## Using this example
+## Description
 
-Run the following command:
+LFT empowers gamers to find their ideal teammates through:
 
-```sh
-npx create-turbo@latest
-```
+- Precision matchmaking based on rank and recent match history
+- Detailed player profiles with performance analytics
+- Real-time chat for instant communication
+- Premium features including voice/video chat and enhanced stats tracking
+- Innovative team chemistry analysis for premium members
 
-## What's inside?
+Whether you're climbing the competitive ladder or seeking casual teammates, LFT provides the tools to elevate your gaming experience. Join us in redefining how gamers connect, compete, and succeed together.
 
-This Turborepo includes the following packages/apps:
+## Table of Contents
+- [Individual Contribution](#individual-contribution)
+- [Technologies Used](#technologies-used)
+- [Usage](#usage)
+- [Contributors](#contributors)
 
-### Apps and Packages
+## Technologies Used
+- **NestJS**: A progressive Node.js framework for building efficient and scalable server-side applications.
+- **Prisma**: An ORM (Object-Relational Mapping) tool that simplifies database access and management.
+- **MongoDB**: A NoSQL database that provides a flexible and scalable solution for storing application data.
+- **JWT (JSON Web Tokens)**: A compact, URL-safe means of representing claims to be transferred between two parties, used for authentication.
+- **WebSocket**: A protocol for full-duplex communication channels over a single TCP connection, enabling real-time data transfer.
+- **Socket.io**: A library that enables real-time, bidirectional communication between web clients and servers.
+- **Stripe API**: A payment processing platform that allows for secure and reliable online transactions.
+- **React.js**: A JavaScript library for building user interfaces, particularly for single-page applications.
+- **Tailwind CSS**: A utility-first CSS framework for creating custom designs without leaving your HTML.
+- **Redis**: An in-memory data store used for caching and managing real-time data efficiently.
+- **Riot Games API**: An API that provides access to gaming data, allowing integration of game-related features.
+- **Next.js**: A React framework that enables server-side rendering and static site generation for improved performance.
+- **Cloudinary**: A cloud-based service for managing images and videos, providing storage, transformation, and delivery.
+- **Turborepo**: A high-performance build system for JavaScript and TypeScript monorepos.
+- **Nodemailer**: A module for Node.js applications to allow easy email sending.
+- **Multer**: A middleware for handling multipart/form-data, used for file uploads.
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+## Individual Contribution
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+#### Suvan Sarkar
+1. Implemented Prisma as the ORM (Object-Relational Mapping) tool to simplify database access and management.
+2. Set up MongoDB as the database solution to store and retrieve application data in a flexible, scalable manner.
+3. Designed and developed the database models using Prisma to define the schema and relationships between entities.
+4. Integrated the Riot Games API to fetch and utilize relevant gaming data within the application.
+5. Structured the backend architecture to ensure modularity, separation of concerns, and maintainability.
+6. Utilized NestJS for building the backend application, ensuring a clean and organized code structure.
 
-### Utilities
+#### Chaitanya Sikakolu 
+1. Developed a secure login authentication system to ensure user privacy and protect sensitive information.
+2. Implemented user registration, login, and session management functionalities.
+3. Utilized appropriate authentication mechanisms such as JWT (JSON Web Tokens) or session-based authentication.
+4. Built a real-time chat feature using WebSocket technology to enable instant messaging between users.
+5. Designed and implemented the chat server and client components to facilitate seamless communication.
+6. Handled WebSocket connections, message broadcasting, and user presence management.
+7. Utilized Socket.io for real-time bidirectional event-based communication.
 
-This Turborepo has some additional tools already setup for you:
+#### Vinayak Anand
+1. Integrated the Stripe API to enable secure and reliable payment processing within the application.
+2. Implemented payment flows, including capturing user payment information, handling transactions, and managing subscriptions.
+3. Designed and developed the gamer dashboard on the frontend to provide a user-friendly interface for managing gaming activities.
+4. Created intuitive UI components and layouts to display relevant information and statistics for gamers.
+5. Implemented features such as game progress tracking, leaderboards, and user profiles within the gamer dashboard.
+6. Utilized React.js for building the frontend application, ensuring a clean and organized code structure.
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+#### Piyush Singh
+1. Designed and developed an engaging and main landing page to attract and onboard users.
+2. Created visually appealing UI components and layouts using React.js and Tailwind CSS.
+3. Implemented responsive design techniques to ensure optimal viewing experience across different devices.
+4. Integrated the Redis API for building, deploying, and managing the chat functionality for scalable real-time communication.
+5. Utilized Redis as an in-memory data store to handle chat message storage and retrieval efficiently.
+6. Implemented caching mechanisms using Redis to improve application performance and reduce database load.
+7. Also, designed PPT & Video for evaluation.
 
-### Build
+## Usage
+- Describe how to access the application and any important features.
+- Provide example API requests if applicable.
 
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+## Contributors
+- [Suvan Sarkar](https://github.com/suvansarkar)
+- [Chaitanya Sikakolu](https://github.com/sikakoluchaitanya)
+- [Vinayak Anand](https://github.com/vinayak-anand)
+- [Piyush Singh](https://github.com/piyush-bug)

@@ -1,4 +1,5 @@
-# LFT: League Finder & Team Builder
+# Qilin
+##LFT: League Finder & Team Builder
 
 LFT revolutionizes team formation in competitive gaming. Our platform seamlessly connects players based on skill level, recent performance, and compatibility, using advanced algorithms including the Glicko-2 rating system.
 

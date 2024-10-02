@@ -1,12 +1,26 @@
-import { clerkMiddleware } from '@clerk/nextjs/server'
+import { NextRequest, NextResponse } from "next/server";
 
-export default clerkMiddleware()
+export async function middleware(request: NextRequest) {
+    const path = request.nextUrl.pathname;
+    const isPublic = path === "/login" || path === "/signup" || path === "/verifyemail";
+
+    const token = request.cookies.get("token")?.value || "";
+
+    if (isPublic && token) {
+        return NextResponse.redirect(new URL("/profile", request.nextUrl));
+    }
+
+    if (!isPublic && !token) {
+        return NextResponse.redirect(new URL("/login", request.nextUrl));
+    }  
+}
 
 export const config = {
-matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
-],}
+    matcher: [
+        '/profile',
+        '/login',
+        '/signup',
+        '/verifyemail',
+    ],
+}
 

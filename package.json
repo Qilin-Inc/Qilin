@@ -8,7 +8,6 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "@types/estree": "^1.0.6",
     "prettier": "^3.2.5",
     "turbo": "^2.1.2",
     "typescript": "^5.4.5"
@@ -22,10 +21,8 @@
     "packages/*"
   ],
   "dependencies": {
-    "@clerk/nextjs": "^5.6.3",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
-    "@fortawesome/react-fontawesome": "^0.2.2",
-    "next": "^14.2.13",
+    "@fortawesome/react-fontawesome": "^0.2.2"
     "nodemailer": "^6.9.15"
   }
 }

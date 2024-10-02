@@ -10,7 +10,6 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChevronDown, Search, Settings, Trophy, Users } from 'lucide-react';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
 
 const LeagueDashboard = () => {
   interface Player {
@@ -28,11 +27,6 @@ const LeagueDashboard = () => {
     { place: 3, name: 'SicK', stats: '88', winrate: '63%', kda: '2.7', rank: 'Immortal' },
     { place: 4, name: 'Asuna', stats: '85', winrate: '60%', kda: '2.4', rank: 'Diamond' },
   ]);
-  const router = useRouter();
-
-  const handleUpgradeClick = () => {
-    router.push('/premium');
-  };
 
   const [searchTerm, setSearchTerm] = useState('');
   const [isPremium, setIsPremium] = useState(false); // Control premium user access
@@ -214,7 +208,7 @@ const LeagueDashboard = () => {
         {!isPremium && (
           <div className="text-center mt-6">
             <p className="text-gray-400">Unlock full stats by upgrading to a premium account!</p>
-            <Button className="mt-2 bg-orange-500 "onClick={handleUpgradeClick}>Upgrade to Premium</Button>
+            <Button className="mt-2 bg-orange-500">Upgrade to Premium</Button>
           </div>
         )}
 

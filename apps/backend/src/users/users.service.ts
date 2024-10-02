@@ -120,32 +120,4 @@ export class UsersService {
             throw new InternalServerErrorException(error.message);
         }
     }
-    
-    async getFiveValMatches(puuid: string){
-        try{
-            const url = `https://api.henrikdev.xyz/valorant/v3/by-puuid/matches/ap/${puuid}?mode=competitive&size=1`;
-            const response = await axios.get(url, {
-                headers: {
-                    'Authorization': `${process.env.HDEV_API_KEY}`
-                }
-            });
-            console.log(response.data);
-            return response.data;
-        } catch (error: any) {
-            console.error("from user service", error);
-            throw new InternalServerErrorException(error.message);
-        }
-    }
-
-    async getPUUID(id: string){
-        try{
-        const user = await prisma.users.findUnique({ where: { id } });
-        const valId = user?.valorantAccountId;
-        const puuid = await prisma.valorantAccount.findUnique({ where: { id: valId } });
-        return puuid;
-        } catch (error: any) {
-            console.error("from user service", error);
-            throw new InternalServerErrorException(error.message);
-        }
-    }
 }

@@ -75,10 +75,6 @@ Whether you're climbing the competitive ladder or seeking casual teammates, LFT 
 6. Implemented caching mechanisms using Redis to improve application performance and reduce database load.
 7. Also, designed PPT & Video for evaluation.
 
-## Usage
-- Describe how to access the application and any important features.
-- Provide example API requests if applicable.
-
 ## Contributors
 - [Suvan Sarkar](https://github.com/suvansarkar)
 - [Chaitanya Sikakolu](https://github.com/sikakoluchaitanya)

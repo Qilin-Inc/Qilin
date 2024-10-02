@@ -24,4 +24,14 @@ export class UsersController {
     async banUser(@Param("id") id: string){
         return this.usersService.banUser(id);
     }
+
+    @Get("/getPUUID/:id")
+    async getPUUID(@Param("id") id: string){
+        return this.usersService.getPUUID(id);
+    }
+
+    @Get("/val/:puuid")
+    async getFiveValMatches(@Param("puuid") puuid: string){
+        return this.usersService.getFiveValMatches(puuid);
+    }
 }

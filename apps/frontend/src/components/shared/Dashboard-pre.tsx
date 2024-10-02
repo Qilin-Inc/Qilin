@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -8,10 +8,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChevronDown, Search, Settings, Trophy, Users, HelpCircle, AlertCircle } from 'lucide-react';
+import { ChevronDown, Search, Settings, Trophy, Users, Loader2 } from 'lucide-react';
 import axios from 'axios';
 
 const LeagueDashboard = () => {
+  // Player interface to include map, mode, queue, and platform
   interface Player {
     name: string;
     rank: string;
@@ -19,24 +20,55 @@ const LeagueDashboard = () => {
     winrate: string;
     kda: string;
     place: number;
+    map: string;      // 'map'
+    mode: string;     // 'mode'
+    queue: string;    // 'queue'
+    platform: string; // 'platform'
   }
   
   const [leaderboard, setLeaderboard] = useState<Player[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
 
   // Fetch leaderboard data from NestJS backend
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/users'); // Adjust the URL to your backend
-        setLeaderboard(response.data);
-      } catch (error) {
-        console.error('Error fetching leaderboard:', error);
-      }
-    };
+  const fetchLeaderboard = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get('/api/users/me');
+      const userId = res.data.data._id;
+      console.log(userId);
+      let puuid = await axios.get(`http://localhost:4000/users/getPUUID/${userId}`);
+      puuid = puuid.data.puuid;
+      const response = await axios.get(`http://localhost:4000/users/val/${puuid}`);
+      
+      // Map API response to the Player interface
+      const playerData = response.data.data.metadata.map((player: any) => ({
+        name: player.name,
+        rank: player.rank,
+        stats: player.stats,
+        winrate: player.winrate,
+        kda: player.kda,
+        place: player.place,
+        map: player.map,
+        mode: player.mode,
+        queue: player.queue,
+        platform: player.platform,
+      }));
+      
+      setLeaderboard(playerData);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching leaderboard:', error);
+      setLoading(false);
+    }
+  };
 
-    fetchLeaderboard();
-  }, []);
+  // Fetch data on mount if leaderboard is empty
+  useEffect(() => {
+    if (leaderboard.length === 0) {
+      fetchLeaderboard();
+    }
+  }, [leaderboard]);
 
   // Filter the leaderboard by search term
   const filteredLeaderboard = leaderboard.filter(player => 
@@ -158,59 +190,47 @@ const LeagueDashboard = () => {
                 </Button>
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-4">
-              {filteredLeaderboard.slice(0, 3).map((player, index) => (
-                <Card key={index} className="bg-gray-700 border-none">
-                  <CardContent className="flex items-center justify-between p-4">
-                    <div className="flex items-center space-x-3">
-                      <Avatar className="w-12 h-12">
-                        <AvatarFallback>{player.name[0]}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-bold">{player.name}</p>
-                        <div className="flex items-center space-x-1">
-                          <span className="text-yellow-500 text-sm">{player.rank}</span>
-                          <Trophy size={14} className="text-yellow-500" />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold">{player.stats}</p>
-                      <p className="text-green-400">{player.winrate}</p>
-                      <p className="text-gray-400">{player.kda}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
           </CardContent>
         </Card>
 
+        {/* Loader */}
+        <div><Loader2 className={`animate-spin ${loading ? 'block' : 'hidden'}`} /></div>
+
         {/* Table */}
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-gray-800">
-              <TableHead className="text-gray-400">Place</TableHead>
-              <TableHead className="text-gray-400">Player name</TableHead>
-              <TableHead className="text-gray-400">Total stats</TableHead>
-              <TableHead className="text-gray-400">Winrate</TableHead>
-              <TableHead className="text-gray-400">KDA</TableHead>
-              <TableHead className="text-gray-400">Rank</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredLeaderboard.map((player, index) => (
-              <TableRow key={index} className="bg-gray-800">
-                <TableCell>{player.place}</TableCell>
-                <TableCell className="font-medium">{player.name}</TableCell>
-                <TableCell>{player.stats}</TableCell>
-                <TableCell>{player.winrate}</TableCell>
-                <TableCell>{player.kda}</TableCell>
-                <TableCell>{player.rank}</TableCell>
+        {!loading && (
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-gray-800">
+                <TableHead className="text-gray-400">Place</TableHead>
+                <TableHead className="text-gray-400">Player name</TableHead>
+                <TableHead className="text-gray-400">Total stats</TableHead>
+                <TableHead className="text-gray-400">Winrate</TableHead>
+                <TableHead className="text-gray-400">KDA</TableHead>
+                <TableHead className="text-gray-400">Rank</TableHead>
+                <TableHead className="text-gray-400">Map</TableHead>
+                <TableHead className="text-gray-400">Mode</TableHead>
+                <TableHead className="text-gray-400">Queue</TableHead>
+                <TableHead className="text-gray-400">Platform</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {filteredLeaderboard.map((player, index) => (
+                <TableRow key={index} className="bg-gray-800">
+                  <TableCell>{player.place}</TableCell>
+                  <TableCell className="font-medium">{player.name}</TableCell>
+                  <TableCell>{player.stats}</TableCell>
+                  <TableCell>{player.winrate}</TableCell>
+                  <TableCell>{player.kda}</TableCell>
+                  <TableCell>{player.rank}</TableCell>
+                  <TableCell>{player.map}</TableCell>
+                  <TableCell>{player.mode}</TableCell>
+                  <TableCell>{player.queue}</TableCell>
+                  <TableCell>{player.platform}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </div>
     </div>
   );

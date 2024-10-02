@@ -1,43 +1,42 @@
-"use client";
-import axios from "axios";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { getUsers } from '../api/users/get-users'; // Adjust the import path as necessary
+import { UserButton } from "@clerk/nextjs";
+import { currentUser, auth } from "@clerk/nextjs/server";
 
-export default function ProfilePage() {
-    const router = useRouter();
-    const [data, setData] = useState(null);
-    const logout = async () => {
-        try {
-            await axios.get("/api/users/logout");
-            router.push("/login");
-        } catch (error: any) {
-            console.log(error.message);
-        }
-    };
+export default async function Home() {
+    // const authDetails = auth();
+    // console.log('Auth Details:', authDetails);
+  
+    const user = await currentUser();
+    // console.log('Current User:', user);
+  
+    const response = await getUsers(); // Fetch users
+    const allUsers = response.data || []; // just accessing the data object from the all users object of array second object in the array is timestamp
+    console.log('Fetched users:', allUsers); // Log the fetched users
 
-    const getUserDetails = async () => {
-        const res = await axios.get("/api/users/me");
-        console.log(res.data);
-        setData(res.data.data._id);
-    }
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen py-6">
-            <h1 className="text-4xl font-bold">Profile</h1>
-            <hr />
-            <p>Profile page</p>
-            <h2>{data === null ? "Nothing" : <Link href={`/profile/${data}`}>{data}</Link>}</h2>
-            <hr />
-            <button
-            onClick={() => {
-                logout();
-            }}
-            className="bg-blue-500 mt-4 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Logout</button>
-            <button
-            onClick={() => {
-                getUserDetails();
-            }}
-            className="bg-green-500 mt-4 hover:bg-green-700 text-white px-4 py-2 rounded-md">Get User Details</button>
-        </div>
-    )
-}
+     <div className="flex flex-col items-center justify-center min-h-screen py-2">
+      <UserButton />
+      {user?.firstName} {user?.lastName}
+      <div>
+        <h1>All users</h1>
+        <ol>
+          {Array.isArray(allUsers) && allUsers.length > 0 ? ( // Check if allUsers is an array and has elements
+            allUsers.map((user: any) => (
+              <li key={user.id}>
+                <div>
+                  <strong>Username:</strong> {user.username} <br />
+                  <strong>Name:</strong> {user.firstName} {user.lastName} <br />
+                  <strong>Email:</strong> {user.emailAddresses.length > 0 ? user.emailAddresses[0].email : 'No email'} <br />
+                  <strong>Phone:</strong> {user.phoneNumbers.length > 0 ? user.phoneNumbers[0].number : 'No phone number'} <br />
+                </div>
+              </li>
+            ))
+          ) : (
+            <li>No users found.</li> // Fallback message if no users are available
+          )}
+        </ol>
+      </div>
+     </div>
+    );
+  }
+

@@ -32,6 +32,18 @@
 $ npm install
 ```
 
+## ENV setup
+
+```
+DATABASE_URL=
+TOKEN_SECRET=
+DOMAIN=
+MAILTRAP_USER=
+MAILTRAP_PASS=
+HDEV_API_KEY=
+CLERK_SECRET_KEY=
+```
+
 ## Compile and run the project
 
 ```bash
@@ -83,3 +95,4 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+

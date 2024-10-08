@@ -34,3 +34,33 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## .env Structure
+
+> .env
+```
+MONGO_URI=
+TOKEN_SECRET=
+DOMAIN=
+MAILTRAP_USER=
+MAILTRAP_PASS=
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+```
+
+> .env.local
+```
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+```
+
+```
+DATABASE_URL=
+TOKEN_SECRET=
+DOMAIN=
+MAILTRAP_USER=
+MAILTRAP_PASS=
+HDEV_API_KEY=
+CLERK_SECRET_KEY=
+```

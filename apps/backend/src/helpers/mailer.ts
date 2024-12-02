@@ -1,10 +1,10 @@
 import * as bcrypt from 'bcryptjs';
 import nodemailer from 'nodemailer';
-import { prisma } from "../utils/prisma";
+import { prisma } from './prisma';
 export const sendEmail = async ({ email, emailType, userId }: any) => {
   try {
     const hashedToken = await bcrypt.hash(userId.toString(), 10);
-    if (emailType === "VERIFY") {
+    if (emailType === 'VERIFY') {
       await prisma.users.update({
         where: { id: userId },
         data: {
@@ -12,7 +12,7 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
           verifyTokenExpiry: new Date(Date.now() + 3600000),
         },
       });
-    } else if (emailType === "RESET") {
+    } else if (emailType === 'RESET') {
       await prisma.users.update({
         where: { id: userId },
         data: {
@@ -33,15 +33,16 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
     //   },
     // });
     // const transport = nodemailer.createTransport({});
-    console.log("nodemailer: ", nodemailer);
+    console.log('nodemailer: ', nodemailer);
 
     const resetUrl = `${process.env.DOMAIN}/reset-password?token=${hashedToken}`;
 
     const mailOptions = {
       from: 'sikak1337@gmail.com',
       to: email,
-      subject: emailType === "VERIFY" ? "Verify your email" : "Reset your password",
-      html: `<p>Click <a href="${resetUrl}">here</a> to ${emailType === "VERIFY" ? "verify your email" : "reset your password"} or copy and paste the link below in your browser. ${resetUrl}</p>`,
+      subject:
+        emailType === 'VERIFY' ? 'Verify your email' : 'Reset your password',
+      html: `<p>Click <a href="${resetUrl}">here</a> to ${emailType === 'VERIFY' ? 'verify your email' : 'reset your password'} or copy and paste the link below in your browser. ${resetUrl}</p>`,
     };
 
     // const mailResponse = await transport.sendMail(mailOptions);

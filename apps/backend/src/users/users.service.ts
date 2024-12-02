@@ -63,19 +63,20 @@ export class UsersService {
 
       if (response.data && response.data.status === 200) {
         console.log('Valorant account connected:', response.data.data);
-        const valorantAccount = await prisma.valorantAccount.create({
+        const valorantAccount = await prisma.valorantUser.create({
           data: {
             username,
             tag,
             puuid: response.data.data.puuid,
             region: response.data.data.region,
             accountLevel: response.data.data.account_level,
+            userId,
           },
         });
-        await prisma.users.update({
-          where: { id: userId },
-          data: { valorantAccountId: valorantAccount.id },
-        });
+        // await prisma.users.update({
+        //   where: { id: userId },
+        //   data: { valorantAccountId: valorantAccount.id },
+        // });
         return {
           message: 'Valorant account connected successfully',
           success: true,

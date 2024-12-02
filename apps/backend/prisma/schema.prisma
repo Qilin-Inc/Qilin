@@ -7,21 +7,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id                        String         @id @default(auto()) @map("_id") @db.ObjectId
-  v                         Int            @map("__v")
-  email                     String         @unique(map: "email_1")
+model users {
+  id                        String        @id @default(auto()) @map("_id") @db.ObjectId
+  v                         Int           @map("__v")
+  email                     String        @unique(map: "email_1")
   isAdmin                   Boolean
   isVerified                Boolean
   password                  String
-  username                  String         @unique(map: "username_1")
+  username                  String        @unique(map: "username_1")
   verifyToken               String?
-  verifyTokenExpiry         DateTime?      @db.Date
+  verifyTokenExpiry         DateTime?     @db.Date
   forgotPasswordToken       String?
-  forgotPasswordTokenExpiry DateTime?      @db.Date
+  forgotPasswordTokenExpiry DateTime?     @db.Date
   profileDescription        String?
-  friends                   String[]       @db.ObjectId
-  friendsCount              Int            @default(0)
+  friends                   String[]      @db.ObjectId
+  friendsCount              Int           @default(0)
   ValorantUser              ValorantUser?
 }
 
@@ -32,6 +32,6 @@ model ValorantUser {
   puuid        String
   region       String?
   accountLevel Int?
-  user         User    @relation(fields: [userId], references: [id])
-  userId       String  @db.ObjectId @unique
+  user         users   @relation(fields: [userId], references: [id])
+  userId       String  @unique @db.ObjectId
 }

@@ -8,9 +8,10 @@ import { UsersService } from './users/users.service';
 import { DashboardController } from './dashboard/dashboard.controller';
 import { DashboardService } from './dashboard/dashboard.service';
 import { ConfigModule } from '@nestjs/config';
+import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true })],
+  imports: [UsersModule, ConfigModule.forRoot({ isGlobal: true })],
   controllers: [
     AppController,
     VerifyemailController,

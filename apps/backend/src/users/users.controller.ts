@@ -29,9 +29,9 @@ export class UsersController {
     return this.usersService.banUser(id);
   }
 
-  @Get('/matchmaking/:id')
-  async getMatchmadeUser(@Param('id') id: string) {
-    console.log('[Nest] GET /matchmaking/' + id);
-    return await this.usersService.matchmakeValorant(id);
+  @Get('/matchmaking/:userId')
+  async getMatchmadeUser(@Param('userId') userId: string) {
+    console.log('[Nest] GET /matchmaking/' + userId);
+    return await this.usersService.matchmakeValorant(userId);
   }
 }

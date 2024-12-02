@@ -161,14 +161,27 @@ export class UsersService {
         .slice(0, 4);
       closestUsers = closestUsers.filter((user) => user.userId !== id);
 
+      // const updatedUsers = closestUsers.map(({ distance, ...rest }) => rest);
+      const updatedUsers = await Promise.all(
+        closestUsers.map(async ({ distance, ...rest }) => {
+          const user = await prisma.users.findUnique({
+            where: { id: rest.userId },
+          });
+          return {
+            name: user.username,
+            ...rest,
+          };
+        }),
+      );
+
       return {
         message: 'Matchmaking successful',
         success: true,
-        closestUsers,
+        updatedUsers,
       };
     } catch (error: any) {
       console.error('Matchmaking Error: \n', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException();
     }
   }
 }

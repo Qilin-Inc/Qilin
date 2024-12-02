@@ -33,6 +33,7 @@ model ValorantUser {
   region       String?
   accountLevel Int?
   rank         String
+  mmr          Int
   user         users   @relation(fields: [userId], references: [id])
   userId       String  @unique @db.ObjectId
 }

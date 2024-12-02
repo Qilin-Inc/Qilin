@@ -1,6 +1,6 @@
-"use client"
+"use client";
 import { games } from "@/data/gamesData";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,11 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
+// Import the CSS
 
 const GamesGrid = () => {
   const [username, setUsername] = useState("");
@@ -25,14 +27,36 @@ const GamesGrid = () => {
     try {
       const res = await axios.get("/api/users/me");
       const userId = res.data.data._id;
-      const response = await axios.post("http://localhost:4000/users/connect", { userId, username, tag });
+
+      const response = await axios.post("http://localhost:4000/users/connect", {
+        userId,
+        username,
+        tag,
+      });
+
+      // Show success toast
+      toast.success("Connected successfully!", {
+        position: "top-center",
+        autoClose: 3000,
+      });
+
       console.log("Connected", response.data);
-    } catch (error) {
+    } catch (error: any) {
+      // Show error toast
+      toast.error(
+        error.response?.data?.message ||
+          "Failed to connect. Please try again later.",
+        {
+          position: "top-center",
+          autoClose: 3000,
+        }
+      );
       console.error("Failed to connect", error);
     } finally {
       setConnecting(false);
     }
-  }
+  };
+
   return (
     <section className="container mx-auto py-8">
       <h2 className="text-2xl font-bold mb-4 text-white">ALL GAMES</h2>
@@ -40,10 +64,14 @@ const GamesGrid = () => {
         {games.map((game) => {
           if (game.name === "Valorant") {
             return (
-              <Dialog>
+              <Dialog key={game.name}>
                 <DialogTrigger asChild>
-                  <div key={game.name} className="bg-gray-800 rounded-lg p-4 text-center h-96">
-                    <img src={game.image} alt={game.name} className="w-full h-80 object-cover rounded-md mb-2" />
+                  <div className="bg-gray-800 rounded-lg p-4 text-center h-96">
+                    <img
+                      src={game.image}
+                      alt={game.name}
+                      className="w-full h-80 object-cover rounded-md mb-2"
+                    />
                     <p className="text-sm text-white">{game.name}</p>
                   </div>
                 </DialogTrigger>
@@ -51,7 +79,8 @@ const GamesGrid = () => {
                   <DialogHeader>
                     <DialogTitle>Connect your {game.name} account</DialogTitle>
                     <DialogDescription>
-                      Connect your valorant account to show your stats to your friends!
+                      Connect your Valorant account to show your stats to your
+                      friends!
                     </DialogDescription>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
@@ -79,24 +108,36 @@ const GamesGrid = () => {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="submit" onClick={handleConnect} disabled={connecting}>{connecting ? "Connecting..." : "Connect"}</Button>
+                    <Button
+                      type="submit"
+                      onClick={handleConnect}
+                      disabled={connecting}
+                    >
+                      {connecting ? "Connecting..." : "Connect"}
+                    </Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-            )
-          }
-          else {
+            );
+          } else {
             return (
-              <div key={game.name} className="bg-gray-800 rounded-lg p-4 text-center h-96">
-                <img src={game.image} alt={game.name} className="w-full h-80 object-cover rounded-md mb-2" />
+              <div
+                key={game.name}
+                className="bg-gray-800 rounded-lg p-4 text-center h-96"
+              >
+                <img
+                  src={game.image}
+                  alt={game.name}
+                  className="w-full h-80 object-cover rounded-md mb-2"
+                />
                 <p className="text-sm text-white">{game.name}</p>
               </div>
-            )
+            );
           }
-        }
-        )}
+        })}
       </div>
     </section>
-  )
+  );
 };
+
 export default GamesGrid;

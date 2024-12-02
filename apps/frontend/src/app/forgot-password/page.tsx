@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -10,7 +11,7 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false);
 
   const handleForgotPassword = async (
-    event: React.FormEvent<HTMLFormElement>,
+    event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
     setLoading(true);
@@ -23,6 +24,9 @@ export default function ForgotPasswordPage() {
       });
       setMessage(response.data.message);
     } catch (error: any) {
+      toast.error(
+        "Login failed: " + error.response?.data?.error || error.message
+      );
       setError(error.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);

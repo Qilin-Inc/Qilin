@@ -8,6 +8,7 @@ import { prisma } from 'src/helpers/prisma';
 import * as bcrypt from 'bcryptjs';
 import { sendEmail } from 'src/helpers/mailer';
 import axios from 'axios';
+import { TransformationType } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
@@ -87,6 +88,7 @@ export class UsersService {
             region: response.data.data.region,
             accountLevel: response.data.data.account_level,
             rank,
+            mmr: rankData.data.data.current.elo,
             userId,
           },
         });
@@ -135,6 +137,51 @@ export class UsersService {
     } catch (error: any) {
       console.error('from user service', error);
       throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async matchmakeValorant(id: any) {
+    try {
+      const valorantUser = await prisma.valorantUser.findUnique({
+        where: { userId: id },
+      });
+
+      if (!valorantUser) {
+        throw new NotFoundException('Valorant account not found');
+      }
+
+      const mmr = valorantUser.mmr;
+      const allPlayers = await prisma.valorantUser.findMany();
+      let closestUsers = allPlayers
+        .map((user) => ({
+          ...user,
+          distance: Math.abs(user.mmr - mmr),
+        }))
+        .sort((a, b) => a.distance - b.distance)
+        .slice(0, 4);
+      closestUsers = closestUsers.filter((user) => user.userId !== id);
+
+      // const updatedUsers = closestUsers.map(({ distance, ...rest }) => rest);
+      const updatedUsers = await Promise.all(
+        closestUsers.map(async ({ distance, ...rest }) => {
+          const user = await prisma.users.findUnique({
+            where: { id: rest.userId },
+          });
+          return {
+            name: user.username,
+            ...rest,
+          };
+        }),
+      );
+
+      return {
+        message: 'Matchmaking successful',
+        success: true,
+        updatedUsers,
+      };
+    } catch (error: any) {
+      console.error('Matchmaking Error: \n', error);
+      throw new InternalServerErrorException();
     }
   }
 }

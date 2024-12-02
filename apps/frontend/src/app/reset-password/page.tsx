@@ -1,17 +1,17 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function ResetPasswordPage() {
   const [isMounted, setIsMounted] = useState(false);
   const searchParams = useSearchParams();
-  const token = searchParams.get('token') as string;
+  const token = searchParams.get("token") as string;
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -20,18 +20,18 @@ export default function ResetPasswordPage() {
 
   useEffect(() => {
     if (isMounted && !token) {
-      setError("Invalid or missing token");
+      toast.error("Invalid or missing token");
     }
   }, [isMounted, token]);
 
-  const handleResetPassword = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleResetPassword = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
     setLoading(true);
-    setError("");
-    setMessage("");
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      toast.error("Passwords do not match");
       setLoading(false);
       return;
     }
@@ -41,9 +41,9 @@ export default function ResetPasswordPage() {
         token,
         newPassword: password,
       });
-      setMessage(response.data.message);
+      toast.success(response.data.message || "Password reset successful!");
     } catch (error: any) {
-      setError(error.response?.data?.message || "Something went wrong");
+      toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -94,10 +94,6 @@ export default function ResetPasswordPage() {
             {loading ? "Resetting..." : "Reset Password"}
           </button>
         </form>
-        {message && (
-          <p className="mt-4 text-center text-green-500">{message}</p>
-        )}
-        {error && <p className="mt-4 text-center text-red-500">{error}</p>}
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { prisma } from 'src/helpers/prisma';
 import * as bcrypt from 'bcryptjs';
@@ -101,7 +102,7 @@ export class UsersService {
         return {
           message: 'Valorant account connected successfully',
           success: true,
-          accountData: response.data.data,
+          accountData: valorantAccount,
         };
       } else {
         throw new Error('Failed to connect Valorant account');
@@ -126,22 +127,35 @@ export class UsersService {
     }
   }
 
-  async banUser(id: string) {
+  async banUser(id: string, adminId: string) {
     try {
-      const user = await prisma.users.findUnique({ where: { id } });
+      const admin = await prisma.users.findUnique({ where: { id: adminId } });
+      if (admin.role !== 'ADMIN') {
+        throw new UnauthorizedException(
+          'User not authorized to perform this action',
+        );
+      }
+      const user = await prisma.users.update({
+        where: { id },
+        data: {
+          isBanned: true,
+        },
+      });
       if (!user) {
         throw new NotFoundException('User not found');
       }
-      const deletedUser = await prisma.users.delete({
-        where: { id },
-      });
       return {
         message: 'User banned successfully',
         success: true,
-        user: deletedUser,
+        user,
       };
     } catch (error: any) {
       console.error('from user service', error);
+      if (error.status === 404) {
+        throw new NotFoundException(error.message);
+      } else if (error.status === 401) {
+        throw new UnauthorizedException(error.message);
+      }
       throw new InternalServerErrorException(error.message);
     }
   }

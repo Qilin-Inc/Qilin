@@ -14,3 +14,7 @@ export class ConnectUserDto {
   username: string;
   tag: string;
 }
+
+export class BanUserDto {
+  adminId: string;
+}

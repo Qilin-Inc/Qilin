@@ -23,6 +23,9 @@ model users {
   isBanned                  Boolean       @default(false)
   rating                    Int           @default(0)
   ValorantUser              ValorantUser?
+  TournamentsOrganized      Tournament[]  @relation("OrganizedTournaments")
+  TournamentsJoined         Tournament[]  @relation("JoinedTournaments", fields: [TournamentsJoinedIds], references: [id])
+  TournamentsJoinedIds      String[]      @db.ObjectId
 }
 
 model ValorantUser {
@@ -48,8 +51,26 @@ model Card {
   ValorantUser ValorantUser[]
 }
 
+model Tournament {
+  id        String            @id @default(auto()) @map("_id") @db.ObjectId
+  owner     users             @relation("OrganizedTournaments", fields: [ownerId], references: [id])
+  ownerId   String            @db.ObjectId
+  players   users[]           @relation("JoinedTournaments", fields: [playerIds], references: [id])
+  playerIds String[]          @unique @db.ObjectId
+  name      String
+  game      String
+  startDate DateTime
+  endDate   DateTime
+  status    TOURNAMENT_STATUS @default(OPEN)
+}
+
 enum ROLE {
   USER
   MANAGER
   ADMIN
+}
+
+enum TOURNAMENT_STATUS {
+  OPEN
+  CLOSED
 }

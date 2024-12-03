@@ -33,9 +33,6 @@ export class UsersService {
           password: hashedPassword,
           verifyToken: '',
           verifyTokenExpiry: new Date(),
-          isAdmin: false,
-          isVerified: false,
-          v: 0,
           email,
         },
       });
@@ -80,6 +77,14 @@ export class UsersService {
 
       if (response.data && response.data.status === 200) {
         console.log('Valorant account connected:', response.data.data);
+        const cardId = response.data.data.card;
+        const card = await prisma.card.create({
+          data: {
+            small: `https://media.valorant-api.com/playercards/${cardId}/smallart.png`,
+            large: `https://media.valorant-api.com/playercards/${cardId}/largeart.png`,
+            wide: `https://media.valorant-api.com/playercards/${cardId}/wideart.png`,
+          },
+        });
         const valorantAccount = await prisma.valorantUser.create({
           data: {
             username,
@@ -88,6 +93,7 @@ export class UsersService {
             region: response.data.data.region,
             accountLevel: response.data.data.account_level,
             rank,
+            cardId: card.id,
             mmr: rankData.data.data.current.elo,
             userId,
           },
@@ -196,10 +202,21 @@ export class UsersService {
       if (!valorantUsers) {
         throw new NotFoundException('Valorant account not found');
       }
+
+      const card = await prisma.card.findUnique({
+        where: { id: valorantUsers.cardId },
+      });
+
+      delete valorantUsers.cardId;
+
+      const final = {
+        ...valorantUsers,
+        card,
+      };
       return {
         message: 'Valorant users fetched successfully',
         success: true,
-        valorantUsers,
+        final,
       };
     } catch (error: any) {
       console.error('from user service', error);

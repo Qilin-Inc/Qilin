@@ -219,8 +219,11 @@ export class UsersService {
         final,
       };
     } catch (error: any) {
-      console.error('from user service', error);
-      throw new InternalServerErrorException(error.message);
+      if (error.status === 404) {
+        throw new NotFoundException(error.message);
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
     }
   }
 }

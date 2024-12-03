@@ -184,4 +184,26 @@ export class UsersService {
       throw new InternalServerErrorException();
     }
   }
+
+  async getValoDetails(id: string) {
+    try {
+      const valorantUsers = await prisma.valorantUser.findUnique({
+        where: {
+          userId: id,
+        },
+      });
+
+      if (!valorantUsers) {
+        throw new NotFoundException('Valorant account not found');
+      }
+      return {
+        message: 'Valorant users fetched successfully',
+        success: true,
+        valorantUsers,
+      };
+    } catch (error: any) {
+      console.error('from user service', error);
+      throw new InternalServerErrorException(error.message);
+    }
+  }
 }

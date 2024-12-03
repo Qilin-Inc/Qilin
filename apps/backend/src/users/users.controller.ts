@@ -23,6 +23,12 @@ export class UsersController {
     return await this.usersService.getAllUsers();
   }
 
+  @Get('/valorant/:userId')
+  async getValoDetails(@Param('userId') userId: string) {
+    console.log('[Nest] GET /valorant/:userId');
+    return await this.usersService.getValoDetails(userId);
+  }
+
   @Post('/ban/:id')
   async banUser(@Param('id') id: string) {
     console.log('[Nest] POST /users/ban/' + id);

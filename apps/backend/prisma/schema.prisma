@@ -21,7 +21,8 @@ model users {
   friendsCount              Int           @default(0)
   role                      ROLE          @default(USER)
   isBanned                  Boolean       @default(false)
-  rating                    Int           @default(0)
+  rating                    Float         @default(0)
+  numberOfRatings           Int           @default(0)
   ValorantUser              ValorantUser?
   TournamentsOrganized      Tournament[]  @relation("OrganizedTournaments")
   TournamentsJoined         Tournament[]  @relation("JoinedTournaments", fields: [TournamentsJoinedIds], references: [id])

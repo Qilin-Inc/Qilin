@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -239,5 +240,33 @@ export class UsersService {
         throw new InternalServerErrorException(error.message);
       }
     }
+  }
+
+  async rateUser(targetId: string, rating: number) {
+    if (rating < 0 || rating > 5) {
+      throw new ForbiddenException('Rating should be between 0 and 5');
+    }
+    const user = await prisma.users.findUnique({
+      where: { id: targetId },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const updatedUser = await prisma.users.update({
+      where: { id: targetId },
+      data: {
+        rating:
+          (user.rating * user.numberOfRatings + rating) /
+          (user.numberOfRatings + 1),
+        numberOfRatings: user.numberOfRatings + 1,
+      },
+    });
+
+    return {
+      message: 'User fetched successfully',
+      success: true,
+      updatedUser,
+    };
   }
 }

@@ -18,3 +18,8 @@ export class ConnectUserDto {
 export class BanUserDto {
   adminId: string;
 }
+
+export class RateUserDto {
+  userId: string;
+  rating: number;
+}

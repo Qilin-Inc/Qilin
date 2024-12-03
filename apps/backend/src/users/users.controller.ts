@@ -1,6 +1,11 @@
 import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { BanUserDto, ConnectUserDto, CreateUserDto } from './user.dto';
+import {
+  BanUserDto,
+  ConnectUserDto,
+  CreateUserDto,
+  RateUserDto,
+} from './user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -15,6 +20,12 @@ export class UsersController {
   async connectUser(@Body() body: ConnectUserDto) {
     console.log('[Nest] PSOT /users/connect');
     return this.usersService.connectUser(body);
+  }
+
+  @Post('/rate')
+  async rateUser(@Body() body: RateUserDto) {
+    console.log('[Nest] POST /users/rate');
+    return this.usersService.rateUser(body.userId, body.rating);
   }
 
   @Get()

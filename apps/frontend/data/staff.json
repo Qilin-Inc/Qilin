@@ -1,0 +1,26 @@
+[
+  {
+    "id": "staff-1733232131215",
+    "email": "sudipstaff@mail.com",
+    "password": "123",
+    "name": "sudip",
+    "role": "staff_admin",
+    "assignedComplaints": 1,
+    "resolvedComplaints": 1,
+    "pendingComplaints": -1,
+    "status": "active",
+    "createdAt": "2024-12-03T13:22:11.215Z"
+  },
+  {
+    "id": "staff-1733248375543",
+    "email": "v@mail.com",
+    "password": "123",
+    "name": "vinayak",
+    "role": "staff_admin",
+    "assignedComplaints": 1,
+    "resolvedComplaints": 0,
+    "pendingComplaints": 0,
+    "status": "active",
+    "createdAt": "2024-12-03T17:52:55.543Z"
+  }
+]

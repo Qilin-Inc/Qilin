@@ -3,7 +3,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { getAuth } from "@/lib/auth";
 import Link from "next/link";
 
@@ -95,7 +95,7 @@ export default function ComplaintsPage() {
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="border rounded-md p-2"
+            className="bg-[#21211D] rounded-3xl p-2 text-white hover:bg-black "
           >
             <option value="all">All Complaints</option>
             <option value="pending">Pending</option>
@@ -104,43 +104,48 @@ export default function ComplaintsPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="rounded-3xl shadow-md overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+          <thead className="bg-[#21211D]">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase">
                 Player
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase">
                 Description
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase">
                 Assigned To
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase">
                 {auth?.role === "super_admin" && "Assign"}
                 {auth?.role === "staff_admin" && "Actions"}
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-[#383836] divide-y divide-[#21211D]">
             {filteredComplaints.map((complaint) => (
               <tr key={complaint.id}>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div>
+                  <div
+                    className="cursor-pointer"
+                    onClick={() => {
+                      router.push(
+                        `/admin/dashboard/complaints/${complaint.id}`,
+                      );
+                    }}
+                  >
                     <div className="font-medium">{complaint.playerName}</div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-gray-400">
                       {complaint.playerEmail}
                     </div>
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <p className="text-sm text-gray-900">
-                    {complaint.description}
-                  </p>
+                  <p className="text-sm text-white">{complaint.description}</p>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span

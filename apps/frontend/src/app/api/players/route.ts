@@ -5,7 +5,7 @@ import { getPlayers } from "@/lib/playerService";
 
 export async function GET() {
   try {
-    const players = getPlayers();
+    const players = await getPlayers();
     return NextResponse.json(players);
   } catch (error) {
     return NextResponse.json(

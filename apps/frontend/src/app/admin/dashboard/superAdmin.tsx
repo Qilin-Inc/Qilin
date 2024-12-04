@@ -1,7 +1,7 @@
 // src/components/dashboard/SuperAdminDashboard.tsx
 
 import { useState, useEffect } from "react";
-import { mockComplaints, mockStaffAdmins, mockPlayers } from "@/mock/data";
+// import { mockComplaints, mockStaffAdmins, mockPlayers } from "@/mock/data";
 //change  mockComplaints to use json data
 
 export default function SuperAdminDashboard() {
@@ -78,7 +78,7 @@ export default function SuperAdminDashboard() {
         ))} */}
       {/* Overview Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-[#383836] p-6 rounded-3xl shadow-md">
           <h3 className="text-lg font-semibold mb-2">Complaints Overview</h3>
           <div className="space-y-2">
             <p>Total: {stats.totalComplaints}</p>
@@ -93,7 +93,7 @@ export default function SuperAdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-[#383836] p-6 rounded-3xl shadow-md">
           <h3 className="text-lg font-semibold mb-2">Platform Statistics</h3>
           <div className="space-y-2">
             <div className="flex justify-between">
@@ -107,9 +107,9 @@ export default function SuperAdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-[#383836] p-6 rounded-3xl shadow-md">
           <h3 className="text-lg font-semibold mb-2">Resolution Rate</h3>
-          <div className="text-3xl font-bold text-blue-600">
+          <div className="text-3xl font-bold text-green-500">
             {stats.totalComplaints > 0
               ? (
                   (stats.resolvedComplaints / stats.totalComplaints) *
@@ -121,36 +121,36 @@ export default function SuperAdminDashboard() {
         </div>
       </div>
       {/* Staff Performance */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-[#383836] p-6 rounded-3xl shadow-md">
         <h3 className="text-lg font-semibold mb-4">Staff Performance</h3>
         <div className="overflow-x-auto">
-          <table className="min-w-full">
-            <thead className="bg-gray-50">
+          <table className="min-w-full rounded-3xl bg-[#2D2C29]">
+            <thead className="bg-[#21211D] ">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase rounded-tl-3xl">
                   Staff
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase">
                   Assigned
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase">
                   Resolved
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase">
                   Pending
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase rounded-tr-3xl">
                   Resolution Rate
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-[#383836]">
               {stats.staffPerformance.map((staff, index) => (
                 <tr key={index}>
                   <td className="px-6 py-4">
                     <div>
                       <div className="font-medium">{staff.name}</div>
-                      <div className="text-sm text-gray-500">{staff.email}</div>
+                      <div className="text-sm text-gray-400">{staff.email}</div>
                     </div>
                   </td>
                   <td className="px-6 py-4">{staff.assigned}</td>
@@ -164,16 +164,19 @@ export default function SuperAdminDashboard() {
         </div>
       </div>
       {/* Recent Complaints */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-[#383836] p-6 rounded-3xl shadow-md">
         <h3 className="text-lg font-semibold mb-4">Recent Complaints</h3>
-        <div className="space-y-4">
+        <div className="space-y-4 bg-[#2D2C29] p-5 rounded-3xl">
           {allComplaints &&
             allComplaints.slice(0, 5).map((complaint: any) => (
-              <div key={complaint.id} className="border-b pb-4">
+              <div
+                key={complaint.id}
+                className="border-b-2 border-[#383836] pb-4"
+              >
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="font-medium">{complaint.playerName}</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-400">
                       {complaint.playerEmail}
                     </p>
                     <p className="text-sm mt-1">{complaint.description}</p>

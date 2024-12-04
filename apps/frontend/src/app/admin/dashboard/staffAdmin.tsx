@@ -74,14 +74,14 @@ export default function StaffAdminDashboard() {
 
       {/* Performance Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-[#383836] p-6 rounded-3xl shadow-md">
           <h3 className="text-sm font-semibold text-gray-500 uppercase">
             Assigned
           </h3>
           <p className="text-3xl font-bold mt-2">{stats.assignedComplaints}</p>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-[#383836]  p-6 rounded-3xl shadow-md">
           <h3 className="text-sm font-semibold text-gray-500 uppercase">
             Pending
           </h3>
@@ -90,7 +90,7 @@ export default function StaffAdminDashboard() {
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-[#383836]  p-6 rounded-3xl shadow-md">
           <h3 className="text-sm font-semibold text-gray-500 uppercase">
             Resolved
           </h3>
@@ -99,7 +99,7 @@ export default function StaffAdminDashboard() {
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-[#383836]  p-6 rounded-3xl shadow-md">
           <h3 className="text-sm font-semibold text-gray-500 uppercase">
             Resolution Rate
           </h3>
@@ -110,9 +110,9 @@ export default function StaffAdminDashboard() {
       </div>
 
       {/* Active Complaints */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-[#383836]  p-6 rounded-3xl shadow-md">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Active Complaints</h3>
+          <h3 className="text-lg font-semibold">Assigned Complaints</h3>
           <Link
             href="/admin/dashboard/complaints"
             className="text-blue-600 hover:text-blue-800"
@@ -120,9 +120,9 @@ export default function StaffAdminDashboard() {
             View All
           </Link>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-4 bg-[#21211D] p-4 rounded-3xl">
           {stats.recentComplaints.map((complaint) => (
-            <div key={complaint.id} className="border-b pb-4">
+            <div key={complaint.id} className="border-b border-[#434341] pb-4">
               <div className="flex justify-between items-start">
                 <div>
                   <p className="font-medium">{complaint.playerName}</p>
@@ -155,19 +155,19 @@ export default function StaffAdminDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-[#383836]  p-6 rounded-3xl shadow-md">
         <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
         <div className="grid grid-cols-2 gap-4">
           <Link
             href="/admin/dashboard/complaints?filter=pending"
-            className="bg-blue-100 text-blue-800 p-4 rounded-lg hover:bg-blue-200 transition-colors"
+            className="bg-blue-100 text-blue-800 p-4 rounded-3xl hover:bg-blue-200 transition-colors"
           >
             <h4 className="font-semibold">View Pending Complaints</h4>
             <p className="text-sm mt-1">Handle your assigned complaints</p>
           </Link>
           <Link
             href="/admin/dashboard/players"
-            className="bg-green-100 text-green-800 p-4 rounded-lg hover:bg-green-200 transition-colors"
+            className="bg-green-100 text-green-800 p-4 rounded-3xl hover:bg-green-200 transition-colors"
           >
             <h4 className="font-semibold">Search Players</h4>
             <p className="text-sm mt-1">Look up player information</p>

@@ -15,6 +15,8 @@ const geistMono = localFont({
 });
 
 import { AuthProvider } from "@/lib/auth-context";
+import { Provider } from "react-redux";
+import { store } from "@/redux/store";
 
 export default function RootLayout({
   children,
@@ -37,7 +39,9 @@ export default function RootLayout({
             pauseOnHover
             theme="light"
           />
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <Provider store={store}>{children}</Provider>
+          </AuthProvider>
         </SocketProvider>
       </body>
     </html>

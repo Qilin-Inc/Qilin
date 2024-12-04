@@ -5,8 +5,8 @@
     "password": "123",
     "name": "sudip",
     "role": "staff_admin",
-    "assignedComplaints": 1,
-    "resolvedComplaints": 1,
+    "assignedComplaints": 2,
+    "resolvedComplaints": 2,
     "pendingComplaints": -1,
     "status": "active",
     "createdAt": "2024-12-03T13:22:11.215Z"
@@ -19,7 +19,7 @@
     "role": "staff_admin",
     "assignedComplaints": 1,
     "resolvedComplaints": 0,
-    "pendingComplaints": 0,
+    "pendingComplaints": 1,
     "status": "active",
     "createdAt": "2024-12-03T17:52:55.543Z"
   }

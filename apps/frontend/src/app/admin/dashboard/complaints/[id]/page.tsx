@@ -51,12 +51,12 @@ export default function ComplaintDetailPage({
   if (!complaint) return <div>Complaint not found</div>;
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="max-w-2xl mx-auto ">
+      <div className="bg-[#383836] rounded-3xl shadow-md p-6">
         <h2 className="text-2xl font-bold mb-6">Complaint Details</h2>
 
         <div className="space-y-4">
-          <div>
+          <div className="bg-[#21211D] p-4 rounded-3xl">
             <h3 className="text-lg font-semibold mb-2">Player Information</h3>
             <p>
               <strong>Name:</strong> {complaint.playerName}
@@ -66,7 +66,7 @@ export default function ComplaintDetailPage({
             </p>
           </div>
 
-          <div>
+          <div className="bg-[#21211D] p-4 rounded-3xl space-y-2">
             <h3 className="text-lg font-semibold mb-2">
               Complaint Information
             </h3>
@@ -92,7 +92,7 @@ export default function ComplaintDetailPage({
           </div>
 
           {complaint.assignedTo && (
-            <div>
+            <div className="bg-[#21211D] p-4 rounded-3xl">
               <h3 className="text-lg font-semibold mb-2">Assignment</h3>
               <p>
                 <strong>Assigned To:</strong> {complaint.assignedTo}
@@ -101,7 +101,7 @@ export default function ComplaintDetailPage({
           )}
 
           {complaint.resolution && (
-            <div>
+            <div className="bg-[#21211D] p-4 rounded-3xl">
               <h3 className="text-lg font-semibold mb-2">Resolution</h3>
               <p>
                 <strong>Type:</strong> {complaint.resolution.type}

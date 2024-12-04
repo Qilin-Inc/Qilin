@@ -27,7 +27,7 @@ export default function StaffLoginPage() {
 
   useEffect(() => {
     if (isAuthenticated()) {
-      router.push("/dashboard");
+      router.push("/admin/dashboard");
     }
   }, [router]);
 

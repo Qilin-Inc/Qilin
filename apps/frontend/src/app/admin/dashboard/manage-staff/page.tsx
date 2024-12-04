@@ -136,7 +136,7 @@ export default function StaffManagementPage() {
         <h2 className="text-2xl font-bold">Staff Management</h2>
         <button
           onClick={() => setIsAddingStaff(true)}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+          className="bg-blue-500 text-white px-4 py-2 rounded-2xl hover:bg-blue-600"
         >
           Add Staff Member
         </button>
@@ -152,8 +152,10 @@ export default function StaffManagementPage() {
       {isAddingStaff && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg w-full max-w-md">
-            <h3 className="text-xl font-bold mb-4">Add New Staff Member</h3>
-            <form onSubmit={handleAddStaff} className="space-y-4">
+            <h3 className="text-xl font-bold mb-4 text-black">
+              Add New Staff Member
+            </h3>
+            <form onSubmit={handleAddStaff} className="space-y-4 text-black">
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Name
@@ -240,33 +242,33 @@ export default function StaffManagementPage() {
           placeholder="Search staff members..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full p-2 border rounded-md"
+          className="w-full p-2 border rounded-md text-black"
         />
       </div>
 
       {/* Staff List */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <div className="bg-[#383836] rounded-3xl shadow-md overflow-hidden">
+        <table className="min-w-full">
+          <thead className="bg-[#21211D]">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase">
                 Name
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase">
                 Email
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase">
                 Complaints
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="divide-y divide-[#21211D]">
             {filteredStaff.map((staff) => (
               <tr key={staff.id}>
                 <td className="px-6 py-4 whitespace-nowrap">{staff.name}</td>
@@ -293,7 +295,7 @@ export default function StaffManagementPage() {
                     <button
                       onClick={() =>
                         handleUpdateStatus(
-                          staff.id,
+                          staff.email,
                           staff.status === "active" ? "inactive" : "active",
                         )
                       }
@@ -306,7 +308,7 @@ export default function StaffManagementPage() {
                       {staff.status === "active" ? "Deactivate" : "Activate"}
                     </button>
                     <button
-                      onClick={() => handleRemoveStaff(staff.id)}
+                      onClick={() => handleRemoveStaff(staff.email)}
                       className="bg-red-100 text-red-800 hover:bg-red-200 px-3 py-1 rounded-md text-sm"
                     >
                       Remove

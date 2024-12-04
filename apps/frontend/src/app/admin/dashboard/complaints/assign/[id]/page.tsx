@@ -71,7 +71,7 @@ export default function AssignComplaintPage({
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#383836] rounded-3xl shadow-md p-6">
         <div className="mb-6">
           <h3 className="text-lg font-semibold mb-2">Complaint Details</h3>
           <p>
@@ -86,13 +86,13 @@ export default function AssignComplaintPage({
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-200 mb-2">
             Assign to Staff Member
           </label>
           <select
             value={selectedStaff}
             onChange={(e) => setSelectedStaff(e.target.value)}
-            className="w-full p-2 border rounded-md"
+            className="w-full p-2 rounded-3xl bg-[#21211D]"
             required
           >
             <option value="">Select Staff Member</option>

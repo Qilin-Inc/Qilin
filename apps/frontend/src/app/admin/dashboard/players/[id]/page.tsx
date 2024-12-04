@@ -18,7 +18,7 @@ export default function PlayerDetailPage({
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#383836] rounded-3xl shadow-md p-6">
         <h2 className="text-2xl font-bold mb-6">Player Details</h2>
 
         <div className="grid grid-cols-2 gap-6 mb-6">
@@ -52,7 +52,7 @@ export default function PlayerDetailPage({
           <h3 className="text-lg font-semibold mb-2">Game Sessions</h3>
           <div className="space-y-4">
             {player.gameSessions.map((session) => (
-              <div key={session.id} className="border p-4 rounded-md">
+              <div key={session.id} className="bg-[#21211D] p-4 rounded-3xl">
                 <p>
                   <strong>Game:</strong> {session.gameName}
                 </p>

@@ -1,6 +1,33 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
+import axios from "axios";
+import { useState } from "react";
+import { getRankImage } from "@/helpers/rankoverlay";
+import Image from "next/image";
 
 export const PlayerDashboard = () => {
+  const [valoData, setValoData] = useState({});
+  const [userData, setUserData] = useState({});
+
+  const getUserDetails = async () => {
+    const res = await axios.get("/api/users/me");
+    const userId = res.data.data._id;
+    console.log("User details", res.data.data);
+    setUserData(res.data.data);
+    try {
+      const valoData = await axios.get(
+        "http://localhost:4000/users/valorant/" + userId
+      );
+      console.log(valoData.data.final);
+      setValoData(valoData.data.final);
+    } catch (error: any) {}
+  };
+
+  useEffect(() => {
+    getUserDetails();
+  }, []);
+
   return (
     <div className="bg-neutral-900 text-neutral-50 min-h-screen rounded-lg shadow-lg flex">
       {/* Sidebar */}
@@ -11,16 +38,14 @@ export const PlayerDashboard = () => {
           </span>
         </button>
         <div className="flex flex-col gap-4">
-          {["Home", "Game", "Schedule", "Settings"].map(
-            (icon, idx) => (
-              <button
-                key={idx}
-                className="w-24 h-12 bg-neutral-800 rounded-md flex justify-center items-center transition duration-300 hover:bg-primary-500"
-              >
-                {icon}
-              </button>
-            )
-          )}
+          {["Home", "Game", "Schedule", "Settings"].map((icon, idx) => (
+            <button
+              key={idx}
+              className="w-24 h-12 bg-neutral-800 rounded-md flex justify-center items-center transition duration-300 hover:bg-primary-500"
+            >
+              {icon}
+            </button>
+          ))}
         </div>
       </aside>
 
@@ -50,44 +75,53 @@ export const PlayerDashboard = () => {
           </div>
         </header>
 
-        {/* Main Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Left Section */}
           <div className="flex flex-col gap-4">
-            {/* Player Card */}
             <div className="bg-neutral-800 rounded-lg p-4 flex items-center transition duration-300 hover:shadow-lg">
               <img
-                src="https://tools-api.webcrumbs.org/image-placeholder/80/80/avatars/1"
+                src={valoData.card ? valoData.card.small : ""}
                 width="80"
                 height="80"
                 className="rounded-full object-contain"
                 alt="avatar"
               />
               <div className="ml-4">
-                <h2 className="text-lg font-semibold">Chandan Mondal</h2>
-                <p className="text-sm text-neutral-400">Top 8 player</p>
+                <h2 className="text-lg font-semibold">{userData.username}</h2>
+                <p className="text-sm text-neutral-400">{valoData.mmr} MMR</p>
               </div>
             </div>
 
             {/* My Team Section */}
-            <div className="bg-neutral-800 rounded-lg">
-              <h3 className="p-4 text-lg font-semibold">My Team</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4">
-                {[...Array(4)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="bg-neutral-700 p-4 rounded-md text-center transition duration-300 hover:bg-neutral-600"
-                  >
-                    <img
-                      src={`https://tools-api.webcrumbs.org/image-placeholder/60/60/avatars/${i + 1}`}
-                      width="60"
-                      height="60"
-                      className="rounded-full object-contain"
-                      alt={`team-${i}`}
-                    />
-                    <p className="mt-2 text-sm">Comando-{i + 1}</p>
-                  </div>
-                ))}
+            <div className="bg-neutral-800 rounded-lg p-4 flex items-center transition duration-300 hover:shadow-lg">
+              <img
+                src={getRankImage(valoData.rank || "Unranked")}
+                width="80"
+                height="80"
+                className="rounded-full object-contain"
+                alt={valoData.rank || "Unranked"}
+              />
+              <div className="ml-4">
+                <h2 className="text-lg font-semibold">{valoData.rank}</h2>
+                <p className="text-sm text-neutral-400">{valoData.mmr} MMR</p>
+              </div>
+            </div>
+            <div className="bg-neutral-800 rounded-lg p-4 px-8 flex justify-between items-center">
+              <div>
+                <h2 className="font-bold">
+                  {valoData.username}{" "}
+                  <span className="font-normal text-sm text-neutral-400">
+                    #{valoData.tag}
+                  </span>
+                </h2>
+              </div>
+              <div>
+                <img
+                  src={
+                    "https://seeklogo.com/images/V/valorant-logo-FAB2CA0E55-seeklogo.com.png"
+                  }
+                  height={40}
+                  width={40}
+                />
               </div>
             </div>
 
@@ -96,10 +130,9 @@ export const PlayerDashboard = () => {
               <div
                 style={{
                   width: "100%",
-                  height: "300px",
-                  backgroundImage:
-                    "url(https://tools-api.webcrumbs.org/image-placeholder/800/400/nature/1)",
-                  backgroundSize: "cover",
+                  height: "180px",
+                  backgroundImage: `url(${valoData.card ? valoData.card.wide : "https://tools-api.webcrumbs.org/image-placeholder/800/400/nature/1"})`,
+                  backgroundSize: "contain",
                 }}
                 className="rounded-lg transition duration-300 hover:scale-105"
               ></div>

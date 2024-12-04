@@ -64,6 +64,7 @@ const GamesGrid = () => {
         {games.map((game) => {
           if (game.name === "Valorant") {
             return (
+              
               <Dialog key={game.name}>
                 <DialogTrigger asChild>
                   <div className="bg-gray-800 rounded-lg p-4 text-center h-96">

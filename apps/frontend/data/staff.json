@@ -1,0 +1,26 @@
+[
+  {
+    "id": "staff-1733232131215",
+    "email": "sudip_staff@iiits.in",
+    "password": "123",
+    "name": "sudip",
+    "role": "staff_admin",
+    "assignedComplaints": 2,
+    "resolvedComplaints": 2,
+    "pendingComplaints": -1,
+    "status": "active",
+    "createdAt": "2024-12-03T13:22:11.215Z"
+  },
+  {
+    "id": "staff-1733248375543",
+    "email": "test_staff@iiits.in",
+    "password": "123",
+    "name": "test",
+    "role": "staff_admin",
+    "assignedComplaints": 1,
+    "resolvedComplaints": 0,
+    "pendingComplaints": 1,
+    "status": "active",
+    "createdAt": "2024-12-03T17:52:55.543Z"
+  }
+]

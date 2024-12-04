@@ -1,0 +1,54 @@
+[
+  {
+    "id": "complaint-1",
+    "playerId": "player-1",
+    "playerEmail": "abc@iiits.in",
+    "playerName": "abc roy",
+    "description": "Toxic behavior in chat",
+    "status": "pending",
+    "assignedTo": "sudip_staff@iiits.in",
+    "createdAt": "2024-10-01T08:00:00Z"
+  },
+  {
+    "id": "complaint-2",
+    "playerId": "player-3",
+    "playerEmail": "ghi@iiits.in",
+    "playerName": "ghi kumar",
+    "description": "Using inappropriate language",
+    "status": "resolved",
+    "assignedTo": "sudip_staff@iiits.in",
+    "createdAt": "2024-10-02T10:30:00Z",
+    "resolution": {
+      "type": "dismiss",
+      "resolvedAt": "2024-10-03T14:20:00Z"
+    }
+  },
+  {
+    "id": "complaint-3",
+    "playerId": "player-3",
+    "playerEmail": "ghi@iiits.in",
+    "playerName": "ghi kumar",
+    "description": "Cheating in competitive match",
+    "status": "resolved",
+    "assignedTo": "test_staff@iiits.in",
+    "createdAt": "2024-10-05T16:45:00Z",
+    "resolution": {
+      "type": "ban",
+      "resolvedAt": "2024-10-06T11:30:00Z"
+    }
+  },
+  {
+    "id": "complaint-4",
+    "playerId": "player-2",
+    "playerEmail": "def@iiits.in",
+    "playerName": "def khanna",
+    "description": "Griefing teammates",
+    "status": "pending",
+    "assignedTo": "",
+    "createdAt": "2024-10-07T09:15:00Z",
+    "resolution": {
+      "type": "ban",
+      "resolvedAt": "2024-12-04T11:48:04.279Z"
+    }
+  }
+]

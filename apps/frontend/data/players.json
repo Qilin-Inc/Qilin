@@ -1,0 +1,57 @@
+[
+  {
+    "id": "player-1",
+    "name": "abc roy",
+    "email": "abc@iiits.in",
+    "totalMatches": 50,
+    "isBanned": false,
+    "createdAt": "2024-01-15T08:30:00Z",
+    "gameSessions": [
+      {
+        "id": "session-1",
+        "gameName": "Valorant",
+        "startTime": "2024-12-02T10:00:00Z",
+        "endTime": "2024-12-02T11:30:00Z",
+        "duration": 5400,
+        "teammates": [
+          {
+            "id": "player-2",
+            "name": "Jane Gamer"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "player-2",
+    "name": "def khanna",
+    "email": "def@iiits.in",
+    "totalMatches": 75,
+    "isBanned": false,
+    "createdAt": "2024-01-10T14:20:00Z",
+    "gameSessions": [
+      {
+        "id": "session-2",
+        "gameName": "CS:GO",
+        "startTime": "2024-12-02T15:00:00Z",
+        "endTime": "2024-12-02T16:45:00Z",
+        "duration": 6300,
+        "teammates": [
+          {
+            "id": "player-1",
+            "name": "John Player"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "player-3",
+    "name": "ghi kumar",
+    "email": "ghi@iiits.in",
+    "totalMatches": 25,
+    "isBanned": true,
+    "createdAt": "2024-02-01T09:15:00Z",
+    "gameSessions": []
+  }
+]

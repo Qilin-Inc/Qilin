@@ -19,3 +19,19 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: ["/profile", "/login", "/signup", "/verifyemail", "/"],
 };
+
+// const auth = request.cookies.get("adminAuth");
+// const isLoginPage =
+//   request.nextUrl.pathname.startsWith("/admin/super") ||
+//   request.nextUrl.pathname.startsWith("/admin/staff") ||
+//   request.nextUrl.pathname === "/";
+
+// if (!auth && !isLoginPage) {
+//   return NextResponse.redirect(new URL("/", request.url));
+// }
+
+// if (auth && isLoginPage) {
+//   return NextResponse.redirect(new URL("/dashboard", request.url));
+// }
+
+// return NextResponse.next();

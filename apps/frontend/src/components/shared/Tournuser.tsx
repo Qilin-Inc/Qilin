@@ -80,23 +80,6 @@ export default function TournamentAdminDashboard() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="ml-4 text-neutral-200 bg-neutral-700 hover:bg-neutral-600">
-              <Plus className="mr-2 h-4 w-4" />
-              Create Tournament
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px]">
-            <DialogHeader>
-              <DialogTitle className="">Create New Tournament</DialogTitle>
-              <DialogDescription>
-                Fill in the details to create a new tournament.
-              </DialogDescription>
-            </DialogHeader>
-            <CreateTournamentForm onSubmit={handleCreateTournament} />
-          </DialogContent>
-        </Dialog>
       </div>
 
       <h2 className="text-2xl font-bold mb-6">Entered Tournaments</h2>
@@ -121,7 +104,7 @@ export default function TournamentAdminDashboard() {
                       : "bg-red-500 hover:bg-red-600"
                   }`}
                 >
-                  {tournament.status}
+                  {tournament.status === "Open" ? "Not Joined" : "Joined"}
                 </Badge>
               </div>
             </CardHeader>
@@ -155,8 +138,8 @@ export default function TournamentAdminDashboard() {
                 }}
               >
                 {tournament.status === "Open"
-                  ? "Close Tournament"
-                  : "Reopen Tournament"}
+                  ? "Join Tournament"
+                  : "Leave Tournament"}
               </Button>
             </CardFooter>
           </Card>

@@ -30,9 +30,7 @@ const formSchema = z.object({
   name: z.string().min(2, {
     message: "Tournament name must be at least 2 characters.",
   }),
-  game: z.string().min(2, {
-    message: "Game type must be at least 2 characters.",
-  }),
+  game: z.string(),
   location: z.string().min(2, {
     message: "Location must be at least 2 characters.",
   }),

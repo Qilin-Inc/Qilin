@@ -4,11 +4,15 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import { useState } from "react";
 import { getRankImage } from "@/helpers/rankoverlay";
-import Image from "next/image";
+import QilingLogo from "../../assets/Qilin_brand.jpeg";
+import { useRouter } from "next/navigation";
 
 export const PlayerDashboard = () => {
   const [valoData, setValoData] = useState({});
   const [userData, setUserData] = useState({});
+  const [matchmadeData, setMatchmadeData] = useState([]);
+  const [tournaments, setTournaments] = useState([]);
+  const router = useRouter();
 
   const getUserDetails = async () => {
     const res = await axios.get("/api/users/me");
@@ -19,9 +23,25 @@ export const PlayerDashboard = () => {
       const valoData = await axios.get(
         "http://localhost:4000/users/valorant/" + userId
       );
-      console.log(valoData.data.final);
+      const matchmadeUsers = await axios.get(
+        "http://localhost:4000/users/matchmaking/" + userId
+      );
+      console.log(matchmadeUsers.data);
       setValoData(valoData.data.final);
-    } catch (error: any) {}
+      setMatchmadeData(matchmadeUsers.data.updatedUsers);
+      if (res.data.data.TournamentsJoinedIds) {
+        res.data.data.TournamentsJoinedIds.map((tournamentId: any) => {
+          axios
+            .get(`http://localhost:4000/tournament/${tournamentId}`)
+            .then((res) => {
+              console.log(res.data);
+              setTournaments([...tournaments, res.data.tournament]);
+            });
+        });
+      }
+    } catch (error: any) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -38,10 +58,13 @@ export const PlayerDashboard = () => {
           </span>
         </button>
         <div className="flex flex-col gap-4">
-          {["Home", "Game", "Schedule", "Settings"].map((icon, idx) => (
+          {["Home"].map((icon, idx) => (
             <button
               key={idx}
               className="w-24 h-12 bg-neutral-800 rounded-md flex justify-center items-center transition duration-300 hover:bg-primary-500"
+              onClick={() => {
+                router.push("/");
+              }}
             >
               {icon}
             </button>
@@ -57,21 +80,7 @@ export const PlayerDashboard = () => {
             Valorant LFT Matcher
           </h1>
           <div className="flex items-center gap-4">
-            {[
-              { points: 4500, color: "text-yellow-400" },
-              { points: 3200, color: "text-red-500" },
-              { points: 1400, color: "text-amber-800" },
-            ].map((item, idx) => (
-              <div
-                key={idx}
-                className="text-center transition duration-300 hover:scale-105"
-              >
-                <p>{item.points}</p>
-                <span className={`material-symbols-outlined ${item.color}`}>
-                  star
-                </span>
-              </div>
-            ))}
+            <img src={QilingLogo.src} width={100} height={200} />
           </div>
         </header>
 
@@ -82,7 +91,7 @@ export const PlayerDashboard = () => {
                 src={valoData.card ? valoData.card.small : ""}
                 width="80"
                 height="80"
-                className="rounded-full object-contain"
+                className="object-contain"
                 alt="avatar"
               />
               <div className="ml-4">
@@ -97,7 +106,7 @@ export const PlayerDashboard = () => {
                 src={getRankImage(valoData.rank || "Unranked")}
                 width="80"
                 height="80"
-                className="rounded-full object-contain"
+                className="object-contain"
                 alt={valoData.rank || "Unranked"}
               />
               <div className="ml-4">
@@ -132,7 +141,7 @@ export const PlayerDashboard = () => {
                   width: "100%",
                   height: "180px",
                   backgroundImage: `url(${valoData.card ? valoData.card.wide : "https://tools-api.webcrumbs.org/image-placeholder/800/400/nature/1"})`,
-                  backgroundSize: "contain",
+                  backgroundSize: "cover",
                 }}
                 className="rounded-lg transition duration-300 hover:scale-105"
               ></div>
@@ -143,15 +152,27 @@ export const PlayerDashboard = () => {
           <div className="flex flex-col gap-5">
             {/* Rankings */}
             <div className="bg-neutral-800 rounded-lg p-6 text-center transition duration-300 hover:shadow-lg">
-              <h4 className="font-bold">Ranking</h4>
+              <h4 className="font-bold">Matchmaking</h4>
               <ul className="divide-y divide-neutral-700 mt-4">
-                {[...Array(4)].map((_, i) => (
+                {matchmadeData.map((user, i) => (
                   <li
                     key={i}
                     className="py-2 flex justify-between transition duration-300 hover:bg-neutral-700"
                   >
-                    <span className="text-neutral-200">MR. Jon Doe</span>
-                    <span className="text-primary-500">XP</span>
+                    <span className="text-neutral-200">
+                      {i + 1}. {user.name}
+                    </span>
+                    <span className="text-primary-500 flex gap-2 items-start justify-center">
+                      <div className="text-neutral-400">
+                        {user.username} #{user.tag}
+                      </div>
+                      <img
+                        src={getRankImage(user.rank)}
+                        width={20}
+                        height={20}
+                        className="flex-shrink-0"
+                      />
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -159,16 +180,19 @@ export const PlayerDashboard = () => {
 
             {/* Feed */}
             <div className="bg-neutral-800 rounded-lg p-6 text-center transition duration-300 hover:shadow-lg">
-              <h4 className="font-bold">Feed</h4>
+              <h4 className="font-bold">Tournaments</h4>
               <ul className="divide-y divide-neutral-700 mt-4">
-                {[...Array(4)].map((_, i) => (
+                {tournaments.map((tournament, i) => (
                   <li
                     key={i}
-                    className="py-2 flex justify-between transition duration-300 hover:bg-neutral-700"
+                    className="py-2 flex justify-between transition duration-300 hover:bg-neutral-700 cursor-pointer"
+                    onClick={() => {
+                      router.push("/tournaments");
+                    }}
                   >
-                    <span className="text-neutral-200">MR. Jon Doe</span>
-                    <span className="material-symbols-outlined text-green-500">
-                      sync
+                    <span className="text-neutral-200">{tournament.name}</span>
+                    <span className="material-symbols-outlined text-neutral-500">
+                      {tournament.game}
                     </span>
                   </li>
                 ))}
@@ -176,21 +200,6 @@ export const PlayerDashboard = () => {
             </div>
 
             {/* Active Players */}
-            <div className="bg-neutral-800 rounded-lg p-6 text-center transition duration-300 hover:shadow-lg">
-              <h4 className="font-bold">Active Player</h4>
-              <div className="flex justify-center gap-2 mt-4">
-                {[...Array(5)].map((_, i) => (
-                  <img
-                    key={i}
-                    src={`https://tools-api.webcrumbs.org/image-placeholder/40/40/avatars/${i + 1}`}
-                    width="40"
-                    height="40"
-                    className="rounded-full object-contain transition duration-300 hover:scale-110"
-                    alt={`player-${i}`}
-                  />
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>

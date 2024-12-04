@@ -19,7 +19,7 @@ const Header = ({ enabled, valoData }: { enabled: boolean; valoData: any }) => {
       <div className="container mx-auto flex justify-between items-center">
         <div className="text-2xl font-bold text-white">QILIN</div>
         <nav className="hidden md:flex space-x-4">
-          {["Home", "Payment", "Developers", "Support"].map((item) => (
+          {["Home", "Payment"].map((item) => (
             <a key={item} href="#" className="hover:text-gray-300 text-white">
               {item}
             </a>

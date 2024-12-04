@@ -11,6 +11,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { TournamentModule } from './tournament/tournament.module';
 import { ReportsModule } from './users/reports/reports.module';
+import { SocketService } from './services/socket';
 
 @Module({
   imports: [UsersModule, ConfigModule.forRoot({ isGlobal: true }), TournamentModule, ReportsModule],
@@ -20,6 +21,6 @@ import { ReportsModule } from './users/reports/reports.module';
     UsersController,
     DashboardController,
   ],
-  providers: [AppService, VerifyemailService, UsersService, DashboardService],
+  providers: [AppService, VerifyemailService, UsersService, DashboardService, SocketService],
 })
 export class AppModule {}

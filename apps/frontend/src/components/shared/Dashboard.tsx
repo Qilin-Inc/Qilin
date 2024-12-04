@@ -1,29 +1,43 @@
-'use client';
-import React, { useEffect, useState } from 'react';
+"use client";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChevronDown, Search, Settings, Trophy, Users } from 'lucide-react';
-import axios from 'axios';
+import { ChevronDown, Search, Settings, Trophy, Users } from "lucide-react";
+import axios from "axios";
 import { getRankImage } from "../../helpers/rankoverlay";
+import { stringify } from "querystring";
 
 // New RankCard Component
-const RankCard = ({ valorank, username, wins = 0, loses = 0, rr = 410, lastMatchPoints = 16 }) => {
+const RankCard = ({
+  valorank,
+  username,
+  wins = 0,
+  loses = 0,
+  rr = 410,
+  lastMatchPoints = 16,
+}) => {
   const [isHovered, setIsHovered] = useState(false);
 
   // Calculate win rate
   const totalMatches = wins + loses;
-  const winRate = totalMatches > 0 
-    ? ((wins / totalMatches) * 100).toFixed(1) 
-    : '0.0';
+  const winRate =
+    totalMatches > 0 ? ((wins / totalMatches) * 100).toFixed(1) : "0.0";
 
   return (
-    <div 
+    <div
       className="p-4 w-full max-w-md group relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -45,22 +59,28 @@ const RankCard = ({ valorank, username, wins = 0, loses = 0, rr = 410, lastMatch
 
           {/* Rating and Stats */}
           <div className="flex flex-col justify-center p-4 leading-normal text-left ml-4 flex-grow">
-            <p className="text-white font-bold text-lg">{valorank || "Unranked"}</p>
-            <p className="text-gray-400 text-sm">Win: {wins} Lose: {loses}</p>
+            <p className="text-white font-bold text-lg">
+              {valorank || "Unranked"}
+            </p>
+            <p className="text-gray-400 text-sm">
+              Win: {wins} Lose: {loses}
+            </p>
 
             {/* Rating Progress Bar */}
             <div className="flex items-center space-x-2 mt-2">
               <div className="w-16 h-2 bg-gray-600 rounded-full">
                 <div
                   className="h-full bg-green-500 rounded-full"
-                  style={{ width: `${(rr / 500) * 100}%` }}
+                  style={{ width: `${((rr % 100) / 100) * 100}%` }}
                 ></div>
               </div>
               <span className="text-gray-300 text-sm">{rr}RR</span>
             </div>
 
             {/* Last Match Stats */}
-            <p className="text-green-500 mt-2 text-sm">Last Match: +{lastMatchPoints}PTS</p>
+            <p className="text-green-500 mt-2 text-sm">
+              Last Match: +{lastMatchPoints}PTS
+            </p>
           </div>
         </a>
       </div>
@@ -69,17 +89,23 @@ const RankCard = ({ valorank, username, wins = 0, loses = 0, rr = 410, lastMatch
       {isHovered && (
         <div className="absolute inset-0 z-10 bg-black/80 rounded-lg flex items-center justify-center">
           <div className="text-center p-6">
-          <div className="flex items-center space-x-4">
-            <img src="https://img.icons8.com/?size=100&id=aUZxT3Erwill&format=png&color=000000" alt="Valorant Icon" className="w-12 h-12" />
-            <h3 className="text-2xl font-bold text-white">{username || "Player Stats"}</h3>
-          </div>
+            <div className="flex items-center space-x-4">
+              <img
+                src="https://img.icons8.com/?size=100&id=aUZxT3Erwill&format=png&color=000000"
+                alt="Valorant Icon"
+                className="w-12 h-12"
+              />
+              <h3 className="text-2xl font-bold text-white">
+                {username || "Player Stats"}
+              </h3>
+            </div>
             <div className="grid grid-cols-2 gap-4 text-white">
               <div className="bg-gray-800 p-3 rounded-lg">
                 <Trophy className="mx-auto mb-2 text-yellow-400" size={24} />
                 <p className="text-sm text-gray-300">Win Rate</p>
                 <p className="font-bold">{winRate}%</p>
               </div>
-              
+
               <div className="bg-gray-800 p-3 rounded-lg">
                 <Users className="mx-auto mb-2 text-blue-400" size={24} />
                 <p className="text-sm text-gray-300">Total Matches</p>
@@ -101,17 +127,21 @@ const LeagueDashboard = () => {
   const [data, setData] = useState<string | null>(null);
   const [id, setId] = useState<string | null>(null);
   const [valorank, setValorank] = useState<string | null>(null);
+  const [valoRR, setValoRR] = useState<number>(0);
   const [username, setUsername] = useState<string | null>(null);
+  const [card, setCard] = useState<{ small: string; wide: string }>({
+    small: "",
+    wide: "",
+  });
 
   const getUserDetails = async () => {
     try {
       const res = await axios.get("/api/users/me");
       const username = res.data.data.username;
       const userId = res.data.data._id;
-  
+
       setData(username);
       setId(userId);
-
     } catch (error) {
       console.error("Error fetching user details:", error);
     }
@@ -119,9 +149,17 @@ const LeagueDashboard = () => {
 
   const getvalorank = async (userId: string) => {
     try {
-      const res = await axios.get(`http://localhost:4000/users/valorant/${userId}`);
-      setValorank(res.data.valorantUsers.rank);
-      setUsername(res.data.valorantUsers.username);
+      const res = await axios.get(
+        `http://localhost:4000/users/valorant/${userId}`
+      );
+      console.log(res.data);
+      setValorank(res.data.final.rank);
+      setUsername(res.data.final.username);
+      setCard({
+        small: res.data.final.card.small,
+        wide: res.data.final.card.wide,
+      });
+      setValoRR(res.data.final.mmr);
     } catch (error) {
       console.error("Error fetching Valorant rank:", error);
     }
@@ -137,20 +175,48 @@ const LeagueDashboard = () => {
   }
 
   const [leaderboard, setLeaderboard] = useState<Player[]>([
-    { place: 1, name: 'Shroud', stats: '98', winrate: '70%', kda: '2.5', rank: 'Radiant' },
-    { place: 2, name: 'TenZ', stats: '92', winrate: '65%', kda: '3.1', rank: 'Immortal 1' },
-    { place: 3, name: 'SicK', stats: '88', winrate: '63%', kda: '2.7', rank: 'Immortal 2' },
-    { place: 4, name: 'Asuna', stats: '85', winrate: '60%', kda: '2.4', rank: 'Diamond 3' },
+    {
+      place: 1,
+      name: "Shroud",
+      stats: "98",
+      winrate: "70%",
+      kda: "2.5",
+      rank: "Radiant",
+    },
+    {
+      place: 2,
+      name: "TenZ",
+      stats: "92",
+      winrate: "65%",
+      kda: "3.1",
+      rank: "Immortal 1",
+    },
+    {
+      place: 3,
+      name: "SicK",
+      stats: "88",
+      winrate: "63%",
+      kda: "2.7",
+      rank: "Immortal 2",
+    },
+    {
+      place: 4,
+      name: "Asuna",
+      stats: "85",
+      winrate: "60%",
+      kda: "2.4",
+      rank: "Diamond 3",
+    },
   ]);
 
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [isPremium, setIsPremium] = useState(false);
 
   // Toggle premium status (for demonstration purposes)
   const togglePremium = () => setIsPremium(!isPremium);
 
   // Filter the leaderboard by search term
-  const filteredLeaderboard = leaderboard.filter(player =>
+  const filteredLeaderboard = leaderboard.filter((player) =>
     player.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -160,7 +226,7 @@ const LeagueDashboard = () => {
 
   useEffect(() => {
     if (id) {
-      getvalorank(id);  // Fetch rank only when the user ID is available
+      getvalorank(id); // Fetch rank only when the user ID is available
     }
   }, [id]);
 
@@ -172,7 +238,7 @@ const LeagueDashboard = () => {
         <div className="relative w-full h-48 rounded-lg overflow-hidden shadow-lg mb-6">
           {/* Background Image */}
           <img
-            src="https://media.valorant-api.com/playercards/bb6ae873-43ec-efb4-3ea6-93ac00a82d4e/wideart.png"
+            src={card.wide}
             alt="Player Card Background"
             className="absolute inset-0 w-full h-full object-cover"
           />
@@ -183,15 +249,19 @@ const LeagueDashboard = () => {
               {/* Avatar */}
               <div className="w-16 h-16 rounded-full border-2 border-white">
                 <Avatar className="w-full h-full">
-                  <AvatarImage src="https://media.valorant-api.com/playercards/bb6ae873-43ec-efb4-3ea6-93ac00a82d4e/smallart.png" />
+                  <AvatarImage src={card.small} />
                   <AvatarFallback>EF</AvatarFallback>
                 </Avatar>
               </div>
 
               {/* User Info */}
               <div>
-                <h2 className="text-2xl font-bold text-white">{ username || "Loading..."}</h2>
-                <p className="text-sm text-gray-300">Welcome to the platform!</p>
+                <h2 className="text-2xl font-bold text-white">
+                  {username || "Loading..."}
+                </h2>
+                <p className="text-sm text-gray-300">
+                  Welcome to the platform!
+                </p>
                 <p className="text-yellow-400 mt-1">
                   Rating: <span className="font-bold">4.8</span>
                 </p>
@@ -216,12 +286,12 @@ const LeagueDashboard = () => {
         </div>
 
         {/* New RankCard Component */}
-        <RankCard 
+        <RankCard
           valorank={valorank}
           username={username}
           wins={10}
           loses={5}
-          rr={410}
+          rr={valoRR}
           lastMatchPoints={16}
         />
 
@@ -242,9 +312,27 @@ const LeagueDashboard = () => {
               <TableRow key={index} className="bg-gray-800">
                 <TableCell>{player.place}</TableCell>
                 <TableCell className="font-medium">{player.name}</TableCell>
-                <TableCell>{isPremium ? player.stats : <span className="blur-sm">###</span>}</TableCell>
-                <TableCell>{isPremium ? player.winrate : <span className="blur-sm">###</span>}</TableCell>
-                <TableCell>{isPremium ? player.kda : <span className="blur-sm">###</span>}</TableCell>
+                <TableCell>
+                  {isPremium ? (
+                    player.stats
+                  ) : (
+                    <span className="blur-sm">###</span>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {isPremium ? (
+                    player.winrate
+                  ) : (
+                    <span className="blur-sm">###</span>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {isPremium ? (
+                    player.kda
+                  ) : (
+                    <span className="blur-sm">###</span>
+                  )}
+                </TableCell>
                 <TableCell>
                   <img
                     src={getRankImage(player.rank)}
@@ -260,7 +348,9 @@ const LeagueDashboard = () => {
 
         {!isPremium && (
           <div className="text-center mt-6">
-            <p className="text-gray-400">Unlock full stats by upgrading to a premium account!</p>
+            <p className="text-gray-400">
+              Unlock full stats by upgrading to a premium account!
+            </p>
             <Button className="mt-2 bg-orange-500">Upgrade to Premium</Button>
           </div>
         )}

@@ -17,10 +17,18 @@ import axios from "axios";
 import { toast } from "react-toastify";
 // Import the CSS
 
-const GamesGrid = () => {
+const GamesGrid = ({
+  enabled,
+  setEnabled,
+}: {
+  enabled: boolean;
+  setEnabled: (arg0: boolean) => void;
+}) => {
   const [username, setUsername] = useState("");
   const [tag, setTag] = useState("");
   const [connecting, setConnecting] = useState(false);
+
+  console.log("enabled: ", enabled);
 
   const handleConnect = async () => {
     setConnecting(true);
@@ -39,7 +47,7 @@ const GamesGrid = () => {
         position: "top-center",
         autoClose: 3000,
       });
-
+      setEnabled(false);
       console.log("Connected", response.data);
     } catch (error: any) {
       // Show error toast
@@ -62,9 +70,8 @@ const GamesGrid = () => {
       <h2 className="text-2xl font-bold mb-4 text-white">ALL GAMES</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {games.map((game) => {
-          if (game.name === "Valorant") {
+          if (game.name === "Valorant" && enabled) {
             return (
-              
               <Dialog key={game.name}>
                 <DialogTrigger asChild>
                   <div className="bg-gray-800 rounded-lg p-4 text-center h-96">
@@ -120,11 +127,29 @@ const GamesGrid = () => {
                 </DialogContent>
               </Dialog>
             );
+          } else if (game.name === "Valorant" && !enabled) {
+            return (
+              <div
+                key={game.name}
+                className="bg-gray-800 rounded-lg p-4 text-center h-96"
+                onClick={() =>
+                  toast.error("Valorant account already connected!")
+                }
+              >
+                <img
+                  src={game.image}
+                  alt={game.name}
+                  className="w-full h-80 object-cover rounded-md mb-2"
+                />
+                <p className="text-sm text-white">{game.name}</p>
+              </div>
+            );
           } else {
             return (
               <div
                 key={game.name}
                 className="bg-gray-800 rounded-lg p-4 text-center h-96"
+                onClick={() => toast.info("Feature coming soon!")}
               >
                 <img
                   src={game.image}

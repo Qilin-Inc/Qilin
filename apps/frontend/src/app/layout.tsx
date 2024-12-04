@@ -1,7 +1,7 @@
 "use client";
 import localFont from "next/font/local";
 import "./globals.css";
-import { SocketProvider } from "../helpers/SocketProvider";
+// import { SocketProvider } from "../helpers/SocketProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <SocketProvider>
+        {/* <SocketProvider> */}
           <ToastContainer
             position="top-center"
             autoClose={3000}
@@ -36,7 +36,7 @@ export default function RootLayout({
             theme="light"
           />
           {children}
-        </SocketProvider>
+        {/* </SocketProvider> */}
       </body>
     </html>
   );

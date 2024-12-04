@@ -3,7 +3,6 @@
 ## LFT: League Finder & Team Builder
 
 LFT revolutionizes team formation in competitive gaming. Our platform seamlessly connects players based on skill level, recent performance, and compatibility, using advanced algorithms.
-LFT revolutionizes team formation in competitive gaming. Our platform seamlessly connects players based on skill level, recent performance, and compatibility, using advanced algorithms.
 
 ## Description
 
@@ -73,7 +72,7 @@ Whether you're climbing the competitive ladder or seeking casual teammates, LFT 
 5. Implemented features such as game progress tracking, leaderboards, and user profiles within the gamer dashboard.
 6. Utilized React.js for building the frontend application, ensuring a clean and organized code structure.
 7. Implemented Tournament Pages
-7. Implemented Tournament Pages
+8. Implemented Tournament Pages
 
 #### Piyush Singh
 
@@ -93,6 +92,27 @@ Whether you're climbing the competitive ladder or seeking casual teammates, LFT 
 3. Implemented a page for managing staff and the ability to create new staff members with limited access.
 4. Added a panel to view user complaints and assign staff to resolve the issues.
 5. Developed a panel for staff administrators to resolve complaints.
+
+## How to run
+
+Go into each apps in the apps directory and run
+
+```bash
+npm install
+```
+
+After that go back into the root directory by
+
+```bash
+cd ../..
+```
+
+and run
+
+```bash
+npm install
+npm run dev
+```
 
 ## Contributors
 

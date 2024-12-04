@@ -15,19 +15,24 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Password is required"],
   },
-  isVerified: {
-    type: Boolean,
-    default: false,
-  },
-  isAdmin: {
-    // storing roles are better
-    type: Boolean,
-    default: false,
-  },
   forgotPasswordToken: String,
   forgotPasswordTokenExpiry: Date,
   verifyToken: String,
   verifyTokenExpiry: Date,
+  isBanned: Boolean,
+  role: {
+    type: String,
+    enum: ["USER", "ADMIN", "MANAGER"],
+    default: "USER",
+  },
+  rating: {
+    type: Number,
+    default: 5,
+  },
+  numberOfRatings: {
+    type: Number,
+    default: 1,
+  },
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

@@ -1,7 +1,7 @@
 # Qilin
 ## LFT: League Finder & Team Builder
 
-LFT revolutionizes team formation in competitive gaming. Our platform seamlessly connects players based on skill level, recent performance, and compatibility, using advanced algorithms including the Glicko-2 rating system.
+LFT revolutionizes team formation in competitive gaming. Our platform seamlessly connects players based on skill level, recent performance, and compatibility, using advanced algorithms.
 
 ## Description
 
@@ -22,23 +22,19 @@ Whether you're climbing the competitive ladder or seeking casual teammates, LFT 
 - [Contributors](#contributors)
 
 ## Technologies Used
-- **NestJS**: A progressive Node.js framework for building efficient and scalable server-side applications.
-- **Prisma**: An ORM (Object-Relational Mapping) tool that simplifies database access and management.
-- **MongoDB**: A NoSQL database that provides a flexible and scalable solution for storing application data.
-- **JWT (JSON Web Tokens)**: A compact, URL-safe means of representing claims to be transferred between two parties, used for authentication.
-- **WebSocket**: A protocol for full-duplex communication channels over a single TCP connection, enabling real-time data transfer.
-- **Socket.io**: A library that enables real-time, bidirectional communication between web clients and servers.
-- **Stripe API**: A payment processing platform that allows for secure and reliable online transactions.
-- **React.js**: A JavaScript library for building user interfaces, particularly for single-page applications.
-- **Tailwind CSS**: A utility-first CSS framework for creating custom designs without leaving your HTML.
-- **Redis**: An in-memory data store used for caching and managing real-time data efficiently.
-- **Riot Games API**: An API that provides access to gaming data, allowing integration of game-related features.
-- **Next.js**: A React framework that enables server-side rendering and static site generation for improved performance.
-- **Cloudinary**: A cloud-based service for managing images and videos, providing storage, transformation, and delivery.
-- **Turborepo**: A high-performance build system for JavaScript and TypeScript monorepos.
-- **Nodemailer**: A module for Node.js applications to allow easy email sending.
-- **Multer**: A middleware for handling multipart/form-data, used for file uploads.
-
+- *NestJS*: A progressive Node.js framework for building efficient and scalable server-side applications.
+- *Prisma*: An ORM (Object-Relational Mapping) tool that simplifies database access and management.
+- *MongoDB*: A NoSQL database that provides a flexible and scalable solution for storing application data.
+- *JWT (JSON Web Tokens)*: A compact, URL-safe means of representing claims to be transferred between two parties, used for authentication.
+- *WebSocket*: A protocol for full-duplex communication channels over a single TCP connection, enabling real-time data transfer.
+- *Socket.io*: A library that enables real-time, bidirectional communication between web clients and servers.
+- *Stripe API*: A payment processing platform that allows for secure and reliable online transactions.
+- *React.js*: A JavaScript library for building user interfaces, particularly for single-page applications.
+- *Tailwind CSS*: A utility-first CSS framework for creating custom designs without leaving your HTML.
+- *Redis*: An in-memory data store used for caching and managing real-time data efficiently.
+- *Riot Games API*: An API that provides access to gaming data, allowing integration of game-related features.
+- *Next.js*: A React framework that enables server-side rendering and static site generation for improved performance.
+- *Turborepo*: A high-performance build system for JavaScript and TypeScript monorepos.
 ## Individual Contribution
 
 #### Suvan Sarkar
@@ -48,6 +44,7 @@ Whether you're climbing the competitive ladder or seeking casual teammates, LFT 
 4. Integrated the Riot Games API to fetch and utilize relevant gaming data within the application.
 5. Structured the backend architecture to ensure modularity, separation of concerns, and maintainability.
 6. Utilized NestJS for building the backend application, ensuring a clean and organized code structure.
+7. Implemented Matchmaking page (for users to connect with players)
 
 #### Chaitanya Sikakolu 
 1. Developed a secure login authentication system to ensure user privacy and protect sensitive information.
@@ -57,6 +54,7 @@ Whether you're climbing the competitive ladder or seeking casual teammates, LFT 
 5. Designed and implemented the chat server and client components to facilitate seamless communication.
 6. Handled WebSocket connections, message broadcasting, and user presence management.
 7. Utilized Socket.io for real-time bidirectional event-based communication.
+8. Implement User Profile Page
 
 #### Vinayak Anand
 1. Integrated the Stripe API to enable secure and reliable payment processing within the application.
@@ -65,6 +63,7 @@ Whether you're climbing the competitive ladder or seeking casual teammates, LFT 
 4. Created intuitive UI components and layouts to display relevant information and statistics for gamers.
 5. Implemented features such as game progress tracking, leaderboards, and user profiles within the gamer dashboard.
 6. Utilized React.js for building the frontend application, ensuring a clean and organized code structure.
+7. Implemented Tournament Pages
 
 #### Piyush Singh
 1. Designed and developed an engaging and main landing page to attract and onboard users.
@@ -74,9 +73,18 @@ Whether you're climbing the competitive ladder or seeking casual teammates, LFT 
 5. Utilized Redis as an in-memory data store to handle chat message storage and retrieval efficiently.
 6. Implemented caching mechanisms using Redis to improve application performance and reduce database load.
 7. Also, designed PPT & Video for evaluation.
+8. Implemented Landing Pages
+
+#### Sudip Halder
+1. Developed login pages for Super Admin and Staff.
+2. Created two distinct dashboards for different types of administrators.
+3. Implemented a page for managing staff and the ability to create new staff members with limited access.
+4. Added a panel to view user complaints and assign staff to resolve the issues.
+5. Developed a panel for staff administrators to resolve complaints.
 
 ## Contributors
 - [Suvan Sarkar](https://github.com/suvansarkar)
 - [Chaitanya Sikakolu](https://github.com/sikakoluchaitanya)
 - [Vinayak Anand](https://github.com/vinayak-anand)
 - [Piyush Singh](https://github.com/piyush-bug)
+- [Sudip Halder](https://github.com/sudipme)

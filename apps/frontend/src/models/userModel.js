@@ -19,7 +19,10 @@ const userSchema = new mongoose.Schema({
   forgotPasswordTokenExpiry: Date,
   verifyToken: String,
   verifyTokenExpiry: Date,
-  isBanned: Boolean,
+  isBanned: {
+    type: Boolean,
+    default: false,
+  },
   role: {
     type: String,
     enum: ["USER", "ADMIN", "MANAGER"],

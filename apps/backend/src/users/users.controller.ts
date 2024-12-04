@@ -1,6 +1,11 @@
 import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { ConnectUserDto, CreateUserDto } from './user.dto';
+import {
+  BanUserDto,
+  ConnectUserDto,
+  CreateUserDto,
+  RateUserDto,
+} from './user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -17,16 +22,28 @@ export class UsersController {
     return this.usersService.connectUser(body);
   }
 
+  @Post('/rate')
+  async rateUser(@Body() body: RateUserDto) {
+    console.log('[Nest] POST /users/rate');
+    return this.usersService.rateUser(body.userId, body.rating);
+  }
+
   @Get()
   async getAllUsers() {
     console.log('[Nest] GET /users');
     return await this.usersService.getAllUsers();
   }
 
+  @Get('/valorant/:userId')
+  async getValoDetails(@Param('userId') userId: string) {
+    console.log('[Nest] GET /valorant/:userId');
+    return await this.usersService.getValoDetails(userId);
+  }
+
   @Post('/ban/:id')
-  async banUser(@Param('id') id: string) {
+  async banUser(@Param('id') id: string, @Body() body: BanUserDto) {
     console.log('[Nest] POST /users/ban/' + id);
-    return this.usersService.banUser(id);
+    return this.usersService.banUser(id, body.adminId);
   }
 
   @Get('/matchmaking/:userId')

@@ -1,8 +1,10 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { prisma } from 'src/helpers/prisma';
 import * as bcrypt from 'bcryptjs';
@@ -33,9 +35,6 @@ export class UsersService {
           password: hashedPassword,
           verifyToken: '',
           verifyTokenExpiry: new Date(),
-          isAdmin: false,
-          isVerified: false,
-          v: 0,
           email,
         },
       });
@@ -80,6 +79,14 @@ export class UsersService {
 
       if (response.data && response.data.status === 200) {
         console.log('Valorant account connected:', response.data.data);
+        const cardId = response.data.data.card;
+        const card = await prisma.card.create({
+          data: {
+            small: `https://media.valorant-api.com/playercards/${cardId}/smallart.png`,
+            large: `https://media.valorant-api.com/playercards/${cardId}/largeart.png`,
+            wide: `https://media.valorant-api.com/playercards/${cardId}/wideart.png`,
+          },
+        });
         const valorantAccount = await prisma.valorantUser.create({
           data: {
             username,
@@ -88,6 +95,7 @@ export class UsersService {
             region: response.data.data.region,
             accountLevel: response.data.data.account_level,
             rank,
+            cardId: card.id,
             mmr: rankData.data.data.current.elo,
             userId,
           },
@@ -95,7 +103,7 @@ export class UsersService {
         return {
           message: 'Valorant account connected successfully',
           success: true,
-          accountData: response.data.data,
+          accountData: valorantAccount,
         };
       } else {
         throw new Error('Failed to connect Valorant account');
@@ -120,22 +128,35 @@ export class UsersService {
     }
   }
 
-  async banUser(id: string) {
+  async banUser(id: string, adminId: string) {
     try {
-      const user = await prisma.users.findUnique({ where: { id } });
+      const admin = await prisma.users.findUnique({ where: { id: adminId } });
+      if (admin.role !== 'ADMIN') {
+        throw new UnauthorizedException(
+          'User not authorized to perform this action',
+        );
+      }
+      const user = await prisma.users.update({
+        where: { id },
+        data: {
+          isBanned: true,
+        },
+      });
       if (!user) {
         throw new NotFoundException('User not found');
       }
-      const deletedUser = await prisma.users.delete({
-        where: { id },
-      });
       return {
         message: 'User banned successfully',
         success: true,
-        user: deletedUser,
+        user,
       };
     } catch (error: any) {
       console.error('from user service', error);
+      if (error.status === 404) {
+        throw new NotFoundException(error.message);
+      } else if (error.status === 401) {
+        throw new UnauthorizedException(error.message);
+      }
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -183,5 +204,69 @@ export class UsersService {
       console.error('Matchmaking Error: \n', error);
       throw new InternalServerErrorException();
     }
+  }
+
+  async getValoDetails(id: string) {
+    try {
+      const valorantUsers = await prisma.valorantUser.findUnique({
+        where: {
+          userId: id,
+        },
+      });
+
+      if (!valorantUsers) {
+        throw new NotFoundException('Valorant account not found');
+      }
+
+      const card = await prisma.card.findUnique({
+        where: { id: valorantUsers.cardId },
+      });
+
+      delete valorantUsers.cardId;
+
+      const final = {
+        ...valorantUsers,
+        card,
+      };
+      return {
+        message: 'Valorant users fetched successfully',
+        success: true,
+        final,
+      };
+    } catch (error: any) {
+      if (error.status === 404) {
+        throw new NotFoundException(error.message);
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
+  }
+
+  async rateUser(targetId: string, rating: number) {
+    if (rating < 0 || rating > 5) {
+      throw new ForbiddenException('Rating should be between 0 and 5');
+    }
+    const user = await prisma.users.findUnique({
+      where: { id: targetId },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const updatedUser = await prisma.users.update({
+      where: { id: targetId },
+      data: {
+        rating:
+          (user.rating * user.numberOfRatings + rating) /
+          (user.numberOfRatings + 1),
+        numberOfRatings: user.numberOfRatings + 1,
+      },
+    });
+
+    return {
+      message: 'User fetched successfully',
+      success: true,
+      updatedUser,
+    };
   }
 }

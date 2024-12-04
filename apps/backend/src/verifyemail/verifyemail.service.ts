@@ -16,7 +16,7 @@ export class VerifyemailService {
         return { error: 'Token expired', status: 400 };
       }
 
-      user.isVerified = true;
+      // user.isVerified = true;
       user.verifyToken = undefined;
       user.verifyTokenExpiry = undefined;
 

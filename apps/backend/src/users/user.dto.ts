@@ -14,3 +14,12 @@ export class ConnectUserDto {
   username: string;
   tag: string;
 }
+
+export class BanUserDto {
+  adminId: string;
+}
+
+export class RateUserDto {
+  userId: string;
+  rating: number;
+}

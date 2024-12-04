@@ -65,6 +65,13 @@ model Tournament {
   status    TOURNAMENT_STATUS @default(OPEN)
 }
 
+model Reports {
+  id        String             @id @default(auto()) @map("_id") @db.ObjectId
+  username  String             
+  reporteduser String         
+  description  String 
+}
+
 enum ROLE {
   USER
   MANAGER

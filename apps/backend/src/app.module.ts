@@ -10,9 +10,10 @@ import { DashboardService } from './dashboard/dashboard.service';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { TournamentModule } from './tournament/tournament.module';
+import { ReportsModule } from './users/reports/reports.module';
 
 @Module({
-  imports: [UsersModule, ConfigModule.forRoot({ isGlobal: true }), TournamentModule],
+  imports: [UsersModule, ConfigModule.forRoot({ isGlobal: true }), TournamentModule, ReportsModule],
   controllers: [
     AppController,
     VerifyemailController,

@@ -41,13 +41,18 @@
 //   );
 // }
 
-'use client';
+"use client";
 import React, { useState, useRef, useEffect } from "react";
 import { Video, Mic, User, Send } from "lucide-react";
-import { useSocket } from '../../helpers/SocketProvider';
+import { useSocket } from "../../helpers/SocketProvider";
+import { useSearchParams } from "next/navigation";
 
 const App = () => {
-  const { sendMessage: socketSendMessage, messages: socketMessages } = useSocket();
+  const { sendMessage: socketSendMessage, messages: socketMessages } =
+    useSocket();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+  console.log("id: ", id);
   const [input, setInput] = useState("");
   const [isVideoCall, setIsVideoCall] = useState(false);
   const messagesEndRef = useRef(null);

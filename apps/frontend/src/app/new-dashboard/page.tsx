@@ -159,7 +159,7 @@ export const PlayerDashboard = () => {
                     key={i}
                     className="py-2 flex justify-between transition duration-300 hover:bg-neutral-700 cursor-pointer"
                     onClick={() => {
-                      router.push("/chat");
+                      router.push("/chat?id=" + userData._id);
                     }}
                   >
                     <span className="text-neutral-200">

@@ -17,13 +17,16 @@ const Header = ({ enabled, valoData }: { enabled: boolean; valoData: any }) => {
   return (
     <header className="bg-gray-800 p-4 sticky top-0 z-10">
       <div className="container mx-auto flex justify-between items-center">
-        <div className="text-2xl font-bold text-white">TRN</div>
+        <div className="text-2xl font-bold text-white">QILIN</div>
         <nav className="hidden md:flex space-x-4">
-          {["Home", "Payment", "Developers", "Support"].map((item) => (
+          {["Home", "Payment"].map((item) => (
             <a key={item} href="#" className="hover:text-gray-300 text-white">
               {item}
             </a>
           ))}
+          <a href="/new-dashboard" className="hover:text-gray-300 text-white">
+            Matchmaking
+          </a>
         </nav>
         <div className="flex items-center space-x-2">
           <Button

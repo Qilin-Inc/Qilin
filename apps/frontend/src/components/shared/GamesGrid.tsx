@@ -20,9 +20,11 @@ import { toast } from "react-toastify";
 const GamesGrid = ({
   enabled,
   setEnabled,
+  setValoData,
 }: {
   enabled: boolean;
   setEnabled: (arg0: boolean) => void;
+  setValoData: (arg0: any) => void;
 }) => {
   const [username, setUsername] = useState("");
   const [tag, setTag] = useState("");
@@ -47,6 +49,11 @@ const GamesGrid = ({
         position: "top-center",
         autoClose: 3000,
       });
+
+      const val = await axios.get(
+        "http://localhost:4000/users/valorant/" + userId
+      );
+      setValoData(val.data);
       setEnabled(false);
       console.log("Connected", response.data);
     } catch (error: any) {

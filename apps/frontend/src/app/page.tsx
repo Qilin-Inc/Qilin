@@ -22,8 +22,8 @@ const TrackerNetworkHomepage = () => {
         "http://localhost:4000/users/valorant/" + userId
       );
       // console.log("Valorant data", valoData.data);
-      setValoEnabled(false);
       setValoData(valoData.data);
+      setValoEnabled(false);
     } catch (error: any) {
       if (error.status === 404) {
         // console.error("Valorant not enabled");
@@ -37,9 +37,16 @@ const TrackerNetworkHomepage = () => {
   }, []);
   return (
     <div className="bg-gray-900 text-white min-h-screen">
-      <Header enabled={valoEnabled} valoData={valoData} />
+      <Header
+        enabled={valoEnabled}
+        card={valoEnabled ? "" : valoData.final.card.small}
+      />
       <MainSection />
-      <GamesGrid enabled={valoEnabled} setEnabled={setValoEnabled} />
+      <GamesGrid
+        enabled={valoEnabled}
+        setEnabled={setValoEnabled}
+        setValoData={setValoData}
+      />
       <Footer />
       {/* <GameVideoChatRoulette /> */}
     </div>

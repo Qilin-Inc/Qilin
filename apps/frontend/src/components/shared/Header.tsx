@@ -2,9 +2,9 @@
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
-const Header = ({ enabled, valoData }: { enabled: boolean; valoData: any }) => {
+const Header = ({ enabled, card }: { enabled: boolean; card: string }) => {
   const router = useRouter();
-  console.log("Valo data", valoData);
+  // console.log("Valo data", valoData);
 
   const handleNavigate = () => {
     router.push("/premium");
@@ -40,11 +40,7 @@ const Header = ({ enabled, valoData }: { enabled: boolean; valoData: any }) => {
             onClick={handleNavigateprofile}
             className={`w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white font-bold ${!enabled ? "cursor-pointer" : "hidden"}`}
           >
-            <img
-              src={!enabled ? valoData.final.card.small : ""}
-              alt=""
-              className="rounded-full"
-            />
+            <img src={card ? card : ""} alt="" className="rounded-full" />
           </div>
         </div>
       </div>

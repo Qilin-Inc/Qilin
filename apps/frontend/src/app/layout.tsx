@@ -39,10 +39,10 @@ export default function RootLayout({
           pauseOnHover
           theme="light"
         />
-        </SocketProvider>
         <AuthProvider>
           <Provider store={store}>{children}</Provider>
         </AuthProvider>
+        </SocketProvider>
       </body>
     </html>
   );

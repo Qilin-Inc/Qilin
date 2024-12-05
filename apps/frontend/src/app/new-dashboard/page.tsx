@@ -157,7 +157,10 @@ export const PlayerDashboard = () => {
                 {matchmadeData.map((user, i) => (
                   <li
                     key={i}
-                    className="py-2 flex justify-between transition duration-300 hover:bg-neutral-700"
+                    className="py-2 flex justify-between transition duration-300 hover:bg-neutral-700 cursor-pointer"
+                    onClick={() => {
+                      router.push("/chat");
+                    }}
                   >
                     <span className="text-neutral-200">
                       {i + 1}. {user.name}

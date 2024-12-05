@@ -1,9 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -11,16 +8,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChevronDown, Search, Settings, Trophy, Users } from "lucide-react";
+} from "@/components/ui/table";;
+import { Users , Trophy, Flame, Star} from "lucide-react";
 import axios from "axios";
 import { getRankImage } from "../../helpers/rankoverlay";
-import { stringify } from "querystring";
 
-// New RankCard Component
+// RankCard Component
 const RankCard = ({
   valorank,
   username,
@@ -123,6 +116,8 @@ const RankCard = ({
   );
 };
 
+// Rest of the LeagueDashboard component remains the same as in the previous submission
+
 const LeagueDashboard = () => {
   const [data, setData] = useState<string | null>(null);
   const [id, setId] = useState<string | null>(null);
@@ -210,10 +205,6 @@ const LeagueDashboard = () => {
   ]);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [isPremium, setIsPremium] = useState(false);
-
-  // Toggle premium status (for demonstration purposes)
-  const togglePremium = () => setIsPremium(!isPremium);
 
   // Filter the leaderboard by search term
   const filteredLeaderboard = leaderboard.filter((player) =>
@@ -297,63 +288,70 @@ const LeagueDashboard = () => {
 
         {/* Table */}
         <Table>
-          <TableHeader>
-            <TableRow className="bg-gray-800">
-              <TableHead className="text-gray-400">Place</TableHead>
-              <TableHead className="text-gray-400">Player name</TableHead>
-              <TableHead className="text-gray-400">Total stats</TableHead>
-              <TableHead className="text-gray-400">Winrate</TableHead>
-              <TableHead className="text-gray-400">KDA</TableHead>
-              <TableHead className="text-gray-400">Rank</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredLeaderboard.map((player, index) => (
-              <TableRow key={index} className="bg-gray-800">
-                <TableCell>{player.place}</TableCell>
-                <TableCell className="font-medium">{player.name}</TableCell>
-                <TableCell>
-                  {isPremium ? (
-                    player.stats
-                  ) : (
-                    <span className="blur-sm">###</span>
-                  )}
-                </TableCell>
-                <TableCell>
-                  {isPremium ? (
-                    player.winrate
-                  ) : (
-                    <span className="blur-sm">###</span>
-                  )}
-                </TableCell>
-                <TableCell>
-                  {isPremium ? (
-                    player.kda
-                  ) : (
-                    <span className="blur-sm">###</span>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <img
-                    src={getRankImage(player.rank)}
-                    alt={player.rank}
-                    className="w-8 h-8 inline-block mr-2"
-                  />
-                  {player.rank}
-                </TableCell>
+            <TableHeader className="bg-gray-900">
+              <TableRow>
+                <TableHead className="text-gray-400 w-16 text-center">Rank</TableHead>
+                <TableHead className="text-gray-400">Player</TableHead>
+                <TableHead className="text-gray-400">Total Stats</TableHead>
+                <TableHead className="text-gray-400">Win Rate</TableHead>
+                <TableHead className="text-gray-400">KDA</TableHead>
+                <TableHead className="text-gray-400 w-32 text-center">Valorant Rank</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-
-        {!isPremium && (
-          <div className="text-center mt-6">
-            <p className="text-gray-400">
-              Unlock full stats by upgrading to a premium account!
-            </p>
-            <Button className="mt-2 bg-orange-500">Upgrade to Premium</Button>
-          </div>
-        )}
+            </TableHeader>
+            <TableBody>
+              {filteredLeaderboard.map((player, index) => (
+                <TableRow 
+                  key={index} 
+                  className={`
+                    ${index === 0 ? 'bg-yellow-900/20' : 
+                     index === 1 ? 'bg-gray-700' : 
+                     index === 2 ? 'bg-orange-900/20' : 'bg-gray-800'}
+                    hover:bg-blue-900/20 transition-colors
+                  `}
+                >
+                  <TableCell className="text-center">
+                    <div className="flex items-center justify-center">
+                      {index === 0 ? (
+                        <Trophy className="text-yellow-400" size={20} />
+                      ) : index === 1 ? (
+                        <Star className="text-gray-300" size={20} />
+                      ) : index === 2 ? (
+                        <Flame   className="text-orange-400" size={20} />
+                      ) : (
+                        <span className="font-bold text-gray-400">{player.place}</span>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="font-medium flex items-center space-x-3">
+                    <Avatar className="w-10 h-10">
+                      <AvatarFallback>{player.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <span>{player.name}</span>
+                  </TableCell>
+                  <TableCell>{player.stats}</TableCell>
+                  <TableCell>
+                    <span className={`
+                      ${parseFloat(player.winrate) > 65 ? 'text-green-400' : 
+                        parseFloat(player.winrate) > 50 ? 'text-yellow-400' : 'text-red-400'}
+                    `}>
+                      {player.winrate}
+                    </span>
+                  </TableCell>
+                  <TableCell>{player.kda}</TableCell>
+                  <TableCell className="text-center">
+                    <div className="flex items-center justify-center space-x-2">
+                      <img
+                        src={getRankImage(player.rank)}
+                        alt={player.rank}
+                        className="w-8 h-8"
+                      />
+                      <span>{player.rank}</span>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
       </div>
     </div>
   );

@@ -2,8 +2,8 @@ import { Admin, Player, Complaint } from "@/types";
 
 export const mockSuperAdmin = {
   id: "super-1",
-  email: "super@admin.com",
-  password: "super123",
+  email: "sudip@iiits.in",
+  password: "123",
   name: "Super Admin",
   role: "super_admin",
   assignedComplaints: 0,

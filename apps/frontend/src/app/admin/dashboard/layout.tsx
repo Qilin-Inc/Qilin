@@ -14,7 +14,6 @@ import ComplaintsIcon from "@/icons/complaintsIcon.svg";
 import PlayerIcon from "@/icons/playerIcon.svg";
 import StaffIcon from "@/icons/staffIcon.svg";
 
-import { useTheme } from "@/hooks/useTheme";
 import { Ham } from "lucide-react";
 // import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 

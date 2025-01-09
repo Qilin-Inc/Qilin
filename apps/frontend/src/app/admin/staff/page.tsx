@@ -65,7 +65,7 @@ export default function StaffLoginPage() {
         });
 
         // Redirect to dashboard
-        router.push("/dashboard");
+        router.push("/admin/dashboard");
       } else {
         setError(data.error || "Invalid credentials");
       }

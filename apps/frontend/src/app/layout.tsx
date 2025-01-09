@@ -15,8 +15,6 @@ const geistMono = localFont({
 });
 
 import { AuthProvider } from "@/lib/auth-context";
-import { Provider } from "react-redux";
-import { store } from "@/redux/store";
 
 export default function RootLayout({
   children,
@@ -27,21 +25,21 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <SocketProvider>
-          <ToastContainer
-            position="top-center"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-          />
-          <AuthProvider>
-            <Provider store={store}>{children}</Provider>
-          </AuthProvider>
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+        <AuthProvider>
+          {children}
+        </AuthProvider>
         </SocketProvider>
       </body>
     </html>

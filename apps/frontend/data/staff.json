@@ -6,8 +6,8 @@
     "name": "sudip",
     "role": "staff_admin",
     "assignedComplaints": 2,
-    "resolvedComplaints": 2,
-    "pendingComplaints": -1,
+    "resolvedComplaints": 1,
+    "pendingComplaints": 1,
     "status": "active",
     "createdAt": "2024-12-03T13:22:11.215Z"
   },
@@ -22,5 +22,17 @@
     "pendingComplaints": 1,
     "status": "active",
     "createdAt": "2024-12-03T17:52:55.543Z"
+  },
+  {
+    "id": "staff-1733336528333",
+    "email": "abcd@iiits.in",
+    "password": "123",
+    "name": "abcd",
+    "role": "staff_admin",
+    "assignedComplaints": 0,
+    "resolvedComplaints": 0,
+    "pendingComplaints": 0,
+    "status": "active",
+    "createdAt": "2024-12-04T18:22:08.333Z"
   }
 ]

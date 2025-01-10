@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,10 +17,10 @@ export default function LoginPage() {
   const [loading, setLoading] = React.useState(false);
 
   const onLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    console.log("users, ", user);
     event.preventDefault();
     try {
       setLoading(true);
-
       const response = await axios.post("/api/users/login", user);
       toast.success("Login successful!");
       console.log("Login success", response.data);
@@ -84,11 +84,10 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={buttonDisabled || loading}
-            className={`w-full ${
-              buttonDisabled || loading
+            className={`w-full ${buttonDisabled || loading
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-indigo-500 hover:bg-indigo-600"
-            } text-white py-2 px-4 rounded-lg transition duration-300`}
+              } text-white py-2 px-4 rounded-lg transition duration-300`}
           >
             {loading ? "Logging in..." : "Login"}
           </button>

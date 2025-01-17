@@ -22,7 +22,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export default function RadialChart() {
+export default function RadialChart({numbers, tag, rotation} : {numbers: number, tag: string, rotation: number}) {
   return (
     <ChartContainer
       config={chartConfig}
@@ -31,7 +31,7 @@ export default function RadialChart() {
       <RadialBarChart
         data={chartData}
         startAngle={0}
-        endAngle={250}
+        endAngle={rotation}
         innerRadius={50}
         outerRadius={70}
       >
@@ -58,14 +58,14 @@ export default function RadialChart() {
                       y={viewBox.cy}
                       className="fill-foreground text-2xl font-bold"
                     >
-                      {chartData[0].visitors.toLocaleString()}
+                      {numbers}
                     </tspan>
                     <tspan
                       x={viewBox.cx}
                       y={(viewBox.cy || 0) + 18}
                       className="fill-muted-foreground"
                     >
-                      Visitors
+                    {tag}
                     </tspan>
                   </text>
                 )

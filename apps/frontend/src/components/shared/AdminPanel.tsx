@@ -1,6 +1,7 @@
 "use client";
 import RadialChart from "@/components/shared/RadialChart";
 import AreaChartGradient from "./AreaChartGradient";
+import { TableDemo } from "./DataTable";
 export default function AdminPanel({ user }: { user: any }) {
   const date = new Date();
   return (
@@ -30,18 +31,18 @@ export default function AdminPanel({ user }: { user: any }) {
               </div>
               <div className="flex flex-col items-center justify-center h-full border-r border-r-gray-400 px-8">
                 <div>
-                  200
+                  169
                 </div>
                 <div className="text-gray-600">
-                  Users
+                  Players
                 </div>
               </div>
               <div className="flex flex-col items-center justify-center h-full px-8">
                 <div>
-                  200
+                  42
                 </div>
                 <div className="text-gray-600">
-                  Users
+                  Tournaments
                 </div>
               </div>
             </div>
@@ -53,23 +54,23 @@ export default function AdminPanel({ user }: { user: any }) {
             <div className="bg-white shadow-lg rounded-lg p-6">
               <div className="flex">
                 <div>
-                  <h3 className="text-gray-600 text-lg font-semibold">Hired Candidates</h3>
-                  <p className="text-3xl font-bold">64</p>
+                  <h3 className="text-gray-600 text-lg font-semibold">Total Players</h3>
+                  <p className="text-3xl font-bold">114</p>
                 </div>
-                <RadialChart />
+                <RadialChart numbers={114} tag="players" rotation={120} />
               </div>
-              <p className="text-purple-500 mt-2">0% Increase This Month</p>
+              <p className="text-purple-500 mt-2">6% Increase This Month</p>
             </div>
             {/* Total Application */}
             <div className="bg-white shadow-lg rounded-lg p-6">
               <div className="flex">
                 <div>
-                  <h3 className="text-gray-600 text-lg font-semibold">Hired Candidates</h3>
-                  <p className="text-3xl font-bold">64</p>
+                  <h3 className="text-gray-600 text-lg font-semibold">Total Tourneys</h3>
+                  <p className="text-3xl font-bold">24</p>
                 </div>
-                <RadialChart />
+                <RadialChart numbers={24} tag="tourneys" rotation={300} />
               </div>
-              <p className="text-purple-500 mt-2">0% Increase This Month</p>
+              <p className="text-purple-500 mt-2">1% Increase This Month</p>
             </div>
             {/* Application Received Chart */}
             <div className="bg-white shadow-lg rounded-lg p-6 col-span-2 row-span-2 h-full">
@@ -81,12 +82,12 @@ export default function AdminPanel({ user }: { user: any }) {
             <div className="bg-white shadow-lg rounded-lg p-6">
               <div className="flex">
                 <div>
-                  <h3 className="text-gray-600 text-lg font-semibold">Hired Candidates</h3>
+                  <h3 className="text-gray-600 text-lg font-semibold">Average Footfall</h3>
                   <p className="text-3xl font-bold">64</p>
                 </div>
-                <RadialChart />
+                <RadialChart numbers={64} tag="footfall" rotation={250} />
               </div>
-              <p className="text-purple-500 mt-2">0% Increase This Month</p>
+              <p className="text-purple-500 mt-2">19% Increase This Month</p>
             </div>
 
             {/* Rejected Candidates */}
@@ -96,14 +97,15 @@ export default function AdminPanel({ user }: { user: any }) {
                   <h3 className="text-gray-600 text-lg font-semibold">Rejected Candidates</h3>
                   <p className="text-3xl font-bold">110</p>
                 </div>
-                <RadialChart />
+                <RadialChart numbers={110} tag="banned" rotation={210} />
               </div>
               <p className="text-red-500 mt-2">16% Increase This Month</p>
             </div>
 
           </div>
-
-
+        </div>
+        <div className="w-full py-5">
+          <TableDemo />
         </div>
       </div>
     </div>

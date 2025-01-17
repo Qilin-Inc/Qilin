@@ -1,0 +1,20 @@
+name: Build & Deploy
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy nodejs app
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            mkdir Qilin
+            cd Qilin
+            git clone git@github.com:Qilin-Inc/Qilin.git
+            echo 'Deployed Successfully'

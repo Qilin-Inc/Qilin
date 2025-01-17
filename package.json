@@ -1,5 +1,5 @@
 {
-  "name": "qilin",
+  "name": "Qilin",
   "private": true,
   "scripts": {
     "build": "turbo build",

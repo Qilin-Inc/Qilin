@@ -28,7 +28,7 @@ export default function Page() {
     <div>
       {loading ? (
         <p>Authorizing...</p>
-      ) : user && user.role === "ADMIN" ? (<AdminPanel user={user}/>) : (<div>Unauthorized</div>)}
+      ) : user && user.role === "USER" ? (<AdminPanel user={user}/>) : (<div>Unauthorized</div>)}
     </div>
   );
 }

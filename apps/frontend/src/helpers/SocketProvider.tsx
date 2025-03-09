@@ -1,5 +1,5 @@
 'use client'
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
 interface SocketProviderProps {
@@ -22,37 +22,36 @@ export const useSocket = () => {
 }
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
-    const [socket, setSocket] = useState<Socket>();
+    const [socket, setSocket] = useState<Socket | null>(null);
     const [messages, setMessages] = useState<string[]>([]);
 
-    const sendMessage: ISocketContext['sendMessage'] = useCallback((msg) => {
-        if (socket) {
-            console.log('Sending message:', msg); // Debugging log
-            socket.emit('event:message', { message: msg });
-        } else {
-            console.error('Socket is not connected'); // Debugging log
-        }
-    }, [socket]);
-
-    const onMessage = useCallback((msg: string) => {
-        console.log("Message received from server", msg);
-        setMessages((prev) => [...prev, msg]);
-    }, []);
-    
     useEffect(() => {
         const _socket = io('http://localhost:4000');
+
+        const onMessage = (msg: string) => {
+            console.log("Message received from server", msg);
+            setMessages((prev) => [...prev, msg]);
+        };
+
         _socket.on('chat:message', onMessage);
         setSocket(_socket);
-        console.log('Socket connected'); // Debugging log
+        console.log('Socket connected');
 
         return () => {
-            _socket.disconnect();
             _socket.off('chat:message', onMessage);
-            setSocket(undefined);
-            console.log('Socket disconnected'); // Debugging log
+            _socket.disconnect();
+            console.log('Socket disconnected');
         };
-    }, [onMessage]);
+    }, []);
 
+    const sendMessage = (msg: string) => {
+        if (socket && socket.connected) {
+            console.log('Sending message:', msg);
+            socket.emit('event:message', { message: msg });
+        } else {
+            console.error('Socket is not connected');
+        }
+    };
 
     return (
         <SocketContext.Provider value={{ sendMessage, messages }}>

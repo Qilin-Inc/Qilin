@@ -12,9 +12,18 @@ import { UsersModule } from './users/users.module';
 import { TournamentModule } from './tournament/tournament.module';
 import { ReportsModule } from './users/reports/reports.module';
 import { SocketService } from './services/socket';
+import {  MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { Logger } from './middlewares/logger.service';
 
 @Module({
-  imports: [UsersModule, ConfigModule.forRoot({ isGlobal: true }), TournamentModule, ReportsModule],
+  providers: [Logger],
+  exports: [Logger],
+})
+export class LoggingModule {}
+
+@Module({
+  imports: [LoggingModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), TournamentModule, ReportsModule],
   controllers: [
     AppController,
     VerifyemailController,
@@ -23,4 +32,8 @@ import { SocketService } from './services/socket';
   ],
   providers: [AppService, VerifyemailService, UsersService, DashboardService, SocketService]
 })
-export class AppModule {}
+export class AppModule implements NestModule{
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

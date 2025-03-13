@@ -3,15 +3,24 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { SocketService } from './services/socket';
 import { prisma } from './helpers/prisma';
+import { ConsoleLogger } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: false
+  });
 
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type, Accept',
   });
+
+  //const logStream = fs.createWriteStream(
+  //  `logs/${ROLL_NUMBER}_${Date.now()}.log`,
+  //  { flags: "a" }
+  //);
+  //app.use(morgan("combined", { stream: logStream }));
 
   const socketService = app.get(SocketService);
   socketService.io.attach(app.getHttpServer());

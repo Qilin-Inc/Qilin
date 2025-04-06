@@ -9,19 +9,18 @@ export class SocketService {
    private subClient: Redis;
 
    constructor() {
-       this.pubClient = new Redis({
-           host: 'redis-14367.c10.us-east-1-2.ec2.redns.redis-cloud.com',
-           port: 14367,
+        this.pubClient = new Redis({
+           host: 'redis-17012.crce182.ap-south-1-1.ec2.redns.redis-cloud.com',
+           port: 17012,
            username: 'default',
-           password: 'HHgWqp7sWU4zOFvaQXkWfPbCgoLvqW6z'
+           password: '7tUgIC921i4DY9okDhhRARtRgCHjooVW'
        });
        this.subClient = new Redis({
-           host: 'redis-14367.c10.us-east-1-2.ec2.redns.redis-cloud.com',
-           port: 14367,
+           host: 'redis-17012.crce182.ap-south-1-1.ec2.redns.redis-cloud.com',
+           port: 17012,
            username: 'default',
-           password: 'HHgWqp7sWU4zOFvaQXkWfPbCgoLvqW6z'
+           password: '7tUgIC921i4DY9okDhhRARtRgCHjooVW'
        });
-
        this._io = new Server({
            cors: {
                allowedHeaders: ["*"],

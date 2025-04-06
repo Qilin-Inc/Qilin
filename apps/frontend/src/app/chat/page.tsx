@@ -42,7 +42,7 @@
 // }
 
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, Suspense } from "react";
 import { Video, Mic, User, Send } from "lucide-react";
 import { useSocket } from "../../helpers/SocketProvider";
 import { useSearchParams } from "next/navigation";
@@ -150,7 +150,7 @@ const App = () => {
 
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
-          {socketMessages.map((msg, index) => (
+          {socketMessages.map((msg:any, index) => (
             <div
               key={index}
               className={`flex ${
@@ -195,4 +195,13 @@ const App = () => {
   );
 };
 
-export default App;
+
+const Page = () => {
+  return (
+    <Suspense >
+      <App />
+    </Suspense>
+  )
+}
+
+export default Page;

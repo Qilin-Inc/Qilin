@@ -7,11 +7,11 @@ import { getRankImage } from "@/helpers/rankoverlay";
 import QilingLogo from "../../assets/Qilin_brand.jpeg";
 import { useRouter } from "next/navigation";
 
-export const PlayerDashboard = () => {
-  const [valoData, setValoData] = useState({});
-  const [userData, setUserData] = useState({});
-  const [matchmadeData, setMatchmadeData] = useState([]);
-  const [tournaments, setTournaments] = useState([]);
+const PlayerDashboard = () => {
+  const [valoData, setValoData] = useState<any>({});
+  const [userData, setUserData] = useState<any>({});
+  const [matchmadeData, setMatchmadeData] = useState<any>([]);
+  const [tournaments, setTournaments] = useState<any>([]);
   const router = useRouter();
 
   const getUserDetails = async () => {

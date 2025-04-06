@@ -6,9 +6,7 @@ import { prisma } from './helpers/prisma';
 import { ConsoleLogger } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    logger: false
-  });
+  const app = await NestFactory.create(AppModule);
 
   app.enableCors({
     origin: '*',

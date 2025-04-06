@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export default function ResetPasswordPage() {
+function ResetPasswordPage() {
   const [isMounted, setIsMounted] = useState(false);
   const searchParams = useSearchParams();
   const token = searchParams.get("token") as string;
@@ -98,3 +98,13 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
+
+const App = () => {
+  return (
+    <Suspense>
+      <ResetPasswordPage />
+    </Suspense>
+  );
+}
+
+export default App;

@@ -166,7 +166,7 @@ export default function SuperAdminDashboard() {
       {/* Recent Complaints */}
       <div className="bg-[#383836] p-6 rounded-3xl shadow-md">
         <h3 className="text-lg font-semibold mb-4">Recent Complaints</h3>
-        <div className="space-y-4 bg-[#2D2C29] p-5 rounded-3xl">
+        {/* <div className="space-y-4 bg-[#2D2C29] p-5 rounded-3xl">
           {allComplaints &&
             allComplaints.slice(0, 5).map((complaint: any) => (
               <div
@@ -193,7 +193,7 @@ export default function SuperAdminDashboard() {
                 </div>
               </div>
             ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );

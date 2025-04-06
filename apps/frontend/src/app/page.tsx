@@ -10,7 +10,7 @@ import axios from "axios";
 
 const TrackerNetworkHomepage = () => {
   const [valoEnabled, setValoEnabled] = useState(true);
-  const [valoData, setValoData] = useState({});
+  const [valoData, setValoData] = useState<any>({});
 
   const getUserDetails = async () => {
     const res = await axios.get("/api/users/me");

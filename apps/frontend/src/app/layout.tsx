@@ -14,7 +14,6 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
 });
 
-import { AuthProvider } from "@/lib/auth-context";
 
 export default function RootLayout({
   children,
@@ -37,9 +36,7 @@ export default function RootLayout({
           pauseOnHover
           theme="light"
         />
-        <AuthProvider>
           {children}
-        </AuthProvider>
         </SocketProvider>
       </body>
     </html>

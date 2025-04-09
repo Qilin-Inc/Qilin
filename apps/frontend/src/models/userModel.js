@@ -15,6 +15,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Password is required"],
   },
+  otp: {
+    type: String, // Temporary OTP for email verification
+  },
+  otpExpiry: {
+    type: Date, // Expiration time for the OTP
+  },
+  isVerified: {
+    type: Boolean,
+    default: false, // Email verification status
+  },
   forgotPasswordToken: String,
   forgotPasswordTokenExpiry: Date,
   verifyToken: String,

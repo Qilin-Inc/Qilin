@@ -153,15 +153,6 @@ export class TournamentService {
         where: { id },
       });
 
-      const user = await prisma.users.update({
-        where: { id: body.userId },
-        data: {
-          TournamentsJoinedIds: {
-            push: id,
-          },
-        },
-      });
-
       if (!tournament) {
         throw new NotFoundException('Tournament not found');
       }
@@ -173,6 +164,16 @@ export class TournamentService {
       if (tournament.status === 'CLOSED') {
         throw new ForbiddenException('Tournament is closed');
       }
+
+      // ✅ Now safe to update user
+      const user = await prisma.users.update({
+        where: { id: body.userId },
+        data: {
+          TournamentsJoinedIds: {
+            push: id,
+          },
+        },
+      });
 
       const updatedTournament = await prisma.tournament.update({
         where: { id },
@@ -194,9 +195,11 @@ export class TournamentService {
       }
       if (error.status === 401) {
         throw new UnauthorizedException(error.message);
-      } else if (error.status === 403) {
+      }
+      if (error.status === 403) {
         throw new ForbiddenException(error.message);
       }
+      console.error('JoinTournament error:', error); // log full error
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -285,4 +288,46 @@ export class TournamentService {
       throw new InternalServerErrorException(error.message);
     }
   }
+
+  async deleteTournament(tournamentId: string, userId: string) {
+    try {
+      const tournament = await prisma.tournament.findUnique({
+        where: { id: tournamentId },
+      });
+
+      if (!tournament) {
+        throw new NotFoundException('Tournament not found');
+      }
+
+      const user = await prisma.users.findUnique({
+        where: { id: userId },
+      });
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      if (user.role !== 'MANAGER' && user.role !== 'ADMIN') {
+        throw new UnauthorizedException(
+          'Only MANAGER or ADMIN can delete tournaments',
+        );
+      }
+
+      await prisma.tournament.delete({
+        where: { id: tournamentId },
+      });
+
+      return {
+        message: 'Tournament deleted successfully',
+        success: true,
+      };
+    } catch (error: any) {
+      if (error.status === 404 || error.status === 401) {
+        throw error;
+      }
+      throw new InternalServerErrorException(error.message);
+    }
+  }
 }
+
+

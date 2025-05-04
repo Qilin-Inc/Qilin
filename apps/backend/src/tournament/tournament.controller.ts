@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post,Delete } from '@nestjs/common';
 import { TournamentService } from './tournament.service';
 import { CreateTournamentDto, JoinTournamentDto } from './tournament.dto';
 
@@ -64,5 +64,14 @@ export class TournamentController {
   async getTournament(@Param() { id }: { id: string }) {
     console.log('[Nest] GET /tournament/' + id);
     return this.tournamentService.getTournamentById(id);
+  }
+
+  @Delete('/delete/:id')
+  async deleteTournament(
+    @Param('id') id: string,
+    @Body('userId') userId: string,
+  ) {
+    console.log(`[Nest] DELETE /tournament/delete/${id}`);
+    return this.tournamentService.deleteTournament(id, userId);
   }
 }

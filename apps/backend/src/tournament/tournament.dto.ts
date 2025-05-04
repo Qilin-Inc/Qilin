@@ -11,3 +11,8 @@ export class CreateTournamentDto {
 export class JoinTournamentDto {
   playerId: string;
 }
+
+export class ToggleTournamentStatusDto {
+  userId: string;
+  status?: 'OPEN' | 'CLOSED';
+}

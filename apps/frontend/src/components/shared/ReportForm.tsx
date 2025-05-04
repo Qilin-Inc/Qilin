@@ -25,7 +25,8 @@ const reporteduserForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:4000/reports/", {
+      const apiURL = process.env.NEXT_PUBLIC_BACKEND;
+      const response = await fetch(apiURL + "/reports/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

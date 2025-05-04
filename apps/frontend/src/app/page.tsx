@@ -18,8 +18,9 @@ const TrackerNetworkHomepage = () => {
     const userId = res.data.data._id;
     console.log("User details", res.data.data);
     try {
+      const apiURL = process.env.NEXT_PUBLIC_BACKEND;
       const valoData = await axios.get(
-        "http://localhost:4000/users/valorant/" + userId
+        apiURL + "/users/valorant/" + userId
       );
       // console.log("Valorant data", valoData.data);
       setValoData(valoData.data);

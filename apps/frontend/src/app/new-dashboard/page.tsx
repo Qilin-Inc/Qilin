@@ -20,19 +20,21 @@ const PlayerDashboard = () => {
     console.log("User details", res.data.data);
     setUserData(res.data.data);
     try {
+      const apiURL = process.env.NEXT_PUBLIC_BACKEND;
       const valoData = await axios.get(
-        "http://localhost:4000/users/valorant/" + userId
+        apiURL + "/users/valorant/" + userId
       );
       const matchmadeUsers = await axios.get(
-        "http://localhost:4000/users/matchmaking/" + userId
+        apiURL + "/users/matchmaking/" + userId
       );
       console.log(matchmadeUsers.data);
       setValoData(valoData.data.final);
       setMatchmadeData(matchmadeUsers.data.updatedUsers);
       if (res.data.data.TournamentsJoinedIds) {
+        const apiURL = process.env.NEXT_PUBLIC_BACKEND;
         res.data.data.TournamentsJoinedIds.map((tournamentId: any) => {
           axios
-            .get(`http://localhost:4000/tournament/${tournamentId}`)
+            .get(`${apiURL}/tournament/${tournamentId}`)
             .then((res) => {
               console.log(res.data);
               setTournaments([...tournaments, res.data.tournament]);

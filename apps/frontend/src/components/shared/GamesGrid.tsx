@@ -38,7 +38,8 @@ const GamesGrid = ({
       const res = await axios.get("/api/users/me");
       const userId = res.data.data._id;
 
-      const response = await axios.post("http://localhost:4000/users/connect", {
+      const apiURL = process.env.NEXT_PUBLIC_BACKEND;
+      const response = await axios.post(apiURL + "/users/connect", {
         userId,
         username,
         tag,
@@ -51,7 +52,7 @@ const GamesGrid = ({
       });
 
       const val = await axios.get(
-        "http://localhost:4000/users/valorant/" + userId
+        apiURL + "/users/valorant/" + userId
       );
       setValoData(val.data);
       setEnabled(false);

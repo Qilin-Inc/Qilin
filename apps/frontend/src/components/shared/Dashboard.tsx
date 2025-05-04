@@ -144,8 +144,9 @@ const LeagueDashboard = () => {
 
   const getvalorank = async (userId: string) => {
     try {
+      const apiURL = process.env.NEXT_PUBLIC_BACKEND;
       const res = await axios.get(
-        `http://localhost:4000/users/valorant/${userId}`
+        `${apiURL}/users/valorant/${userId}`
       );
       console.log(res.data);
       setValorank(res.data.final.rank);

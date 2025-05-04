@@ -26,7 +26,8 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     const [messages, setMessages] = useState<string[]>([]);
 
     useEffect(() => {
-        const _socket = io('http://localhost:4000');
+        const apiURL = process.env.NEXT_PUBLIC_BACKEND;
+        const _socket = io(apiURL);
 
         const onMessage = (msg: string) => {
             console.log("Message received from server", msg);

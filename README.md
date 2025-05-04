@@ -95,23 +95,12 @@ Whether you're climbing the competitive ladder or seeking casual teammates, LFT 
 
 ## How to run
 
-Go into each apps in the apps directory and run
+Make sure you have docker installed on your desktop
 
-```bash
-npm install
+And then simple run
+
 ```
-
-After that go back into the root directory by
-
-```bash
-cd ../..
-```
-
-and run
-
-```bash
-npm install
-npm run dev
+    docker compose up
 ```
 
 ## Contributors

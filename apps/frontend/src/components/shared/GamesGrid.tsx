@@ -75,7 +75,7 @@ const GamesGrid = ({
 
   return (
     <section className="container mx-auto py-8">
-      <h2 className="text-2xl font-bold mb-4 text-white">ALL GAMES</h2>
+      <h2 className="text-2xl font-bold mb-4 text-white">ALL GAMES - MORE TO BE ADDED SOON!</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {games.map((game) => {
           if (game.name === "Valorant" && enabled) {

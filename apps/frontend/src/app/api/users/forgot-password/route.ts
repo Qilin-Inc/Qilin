@@ -1,6 +1,6 @@
 import { connectDB } from '@/dbconfig/dbconfig';
 import User from '@/models/userModel';
-import { sendEmail } from '@/helpers/mailer';
+// import { sendEmail } from '@/helpers/mailer';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'User not found' }, { status: 404 });
   }
 
-  await sendEmail({ email, emailType: 'RESET', userId: user._id });
+  // await sendEmail({ email, emailType: 'RESET', userId: user._id });
 
   return NextResponse.json({ message: 'Password reset email sent' }, { status: 200 });
 }

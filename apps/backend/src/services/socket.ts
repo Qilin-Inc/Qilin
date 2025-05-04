@@ -10,16 +10,16 @@ export class SocketService {
 
    constructor() {
         this.pubClient = new Redis({
-           host: 'redis-17012.crce182.ap-south-1-1.ec2.redns.redis-cloud.com',
-           port: 17012,
+           host: 'redis-11072.c305.ap-south-1-1.ec2.redns.redis-cloud.com',
+           port: 11072,
            username: 'default',
-           password: '7tUgIC921i4DY9okDhhRARtRgCHjooVW'
+           password: 'WD9JVrpeVCNr8o1OpnzUlZthe4BY4BxM'
        });
        this.subClient = new Redis({
-           host: 'redis-17012.crce182.ap-south-1-1.ec2.redns.redis-cloud.com',
-           port: 17012,
+           host: 'redis-11072.c305.ap-south-1-1.ec2.redns.redis-cloud.com',
+           port: 11072,
            username: 'default',
-           password: '7tUgIC921i4DY9okDhhRARtRgCHjooVW'
+           password: 'WD9JVrpeVCNr8o1OpnzUlZthe4BY4BxM'
        });
        this._io = new Server({
            cors: {

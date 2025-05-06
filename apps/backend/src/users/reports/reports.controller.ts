@@ -1,11 +1,12 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ReportsService } from './reports.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Reports')
 @Controller('reports')
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
-  // POST: Create a new report
   @Post()
   async createReport(
     @Body()
@@ -18,7 +19,6 @@ export class ReportsController {
     return this.reportsService.createReport(data);
   }
 
-  // GET: Fetch all reports
   @Get()
   async getReports() {
     return this.reportsService.getReports();

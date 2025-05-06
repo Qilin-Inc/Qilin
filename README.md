@@ -50,7 +50,6 @@ Whether you're climbing the competitive ladder or seeking casual teammates, LFT 
 5. Structured the backend architecture to ensure modularity, separation of concerns, and maintainability.
 6. Utilized NestJS for building the backend application, ensuring a clean and organized code structure.
 7. Implemented Matchmaking page (for users to connect with players)
-8. Dockerized the entire application
 
 #### Chaitanya Sikakolu
 

@@ -4,6 +4,7 @@ import "./globals.css";
 import { SocketProvider } from "../helpers/SocketProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Head from "next/head";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,6 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+        <head>
+          <title>Qilin: Find your perfect gaming partner today!</title>
+        </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <SocketProvider>
         <ToastContainer

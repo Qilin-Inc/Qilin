@@ -5,7 +5,6 @@ import Header from "@/components/shared/Header";
 import MainSection from "@/components/shared/MainSection";
 import GamesGrid from "@/components/shared/GamesGrid";
 import Footer from "@/components/shared/Footer";
-import GameVideoChatRoulette from "@/components/shared/matchmakingui";
 import axios from "axios";
 
 const TrackerNetworkHomepage = () => {

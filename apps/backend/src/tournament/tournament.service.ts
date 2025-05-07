@@ -87,7 +87,7 @@ export class TournamentService {
         throw new NotFoundException('User not found');
       }
 
-      if (user.role !== 'MANAGER') {
+      if (user.role !== 'MANAGER' && user.role !== 'ADMIN') {
         throw new UnauthorizedException(
           'User is not authorized to create a tournament',
         );
@@ -165,8 +165,20 @@ export class TournamentService {
         throw new ForbiddenException('Tournament is closed');
       }
 
+      const user = await prisma.users.findUnique({
+        where: { id: body.userId },
+      });
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      if (user.role === 'MANAGER' || user.role === 'ADMIN') {
+        throw new ForbiddenException('Managers and Admins cannot join tournaments');
+      }
+
       // ✅ Now safe to update user
-      const user = await prisma.users.update({
+      await prisma.users.update({
         where: { id: body.userId },
         data: {
           TournamentsJoinedIds: {
@@ -204,6 +216,78 @@ export class TournamentService {
     }
   }
 
+  async withdrawFromTournament(id: string, body: any) {
+    try {
+      const tournament = await prisma.tournament.findUnique({
+        where: { id },
+      });
+
+      if (!tournament) {
+        throw new NotFoundException('Tournament not found');
+      }
+
+      if (!tournament.playerIds.includes(body.userId)) {
+        throw new UnauthorizedException('User has not joined this tournament');
+      }
+
+      if (tournament.status === 'CLOSED') {
+        throw new ForbiddenException('Cannot withdraw from a closed tournament');
+      }
+
+      const user = await prisma.users.findUnique({
+        where: { id: body.userId },
+      });
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      if (user.role === 'MANAGER' || user.role === 'ADMIN') {
+        throw new ForbiddenException('Managers and Admins cannot withdraw from tournaments');
+      }
+
+      // Update user to remove tournament from joined list
+      await prisma.users.update({
+        where: { id: body.userId },
+        data: {
+          TournamentsJoinedIds: {
+            set: (user.TournamentsJoinedIds || []).filter(
+              (tournamentId) => tournamentId !== id
+            ),
+          },
+        },
+      });
+
+      // Update tournament to remove user from players list
+      const updatedTournament = await prisma.tournament.update({
+        where: { id },
+        data: {
+          playerIds: {
+            set: tournament.playerIds.filter((playerId) => playerId !== body.userId),
+          },
+        },
+      });
+
+      return {
+        message: 'User withdrawn from tournament successfully',
+        success: true,
+        tournament: updatedTournament,
+      };
+    } catch (error: any) {
+      if (error.status === 404) {
+        throw new NotFoundException(error.message);
+      }
+      if (error.status === 401) {
+        throw new UnauthorizedException(error.message);
+      }
+      if (error.status === 403) {
+        throw new ForbiddenException(error.message);
+      }
+      console.error('WithdrawFromTournament error:', error);
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
   async getTournamentStatus(id: string) {
     try {
       const tournament = await prisma.tournament.findUnique({
@@ -237,7 +321,16 @@ export class TournamentService {
         throw new NotFoundException('Tournament not found');
       }
 
-      if (tournament.ownerId !== body.userId) {
+      const user = await prisma.users.findUnique({
+        where: { id: body.userId },
+      });
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      // Allow admins to toggle any tournament, others only if they own it
+      if (user.role !== 'ADMIN' && tournament.ownerId !== body.userId) {
         throw new UnauthorizedException(
           'User is not authorized to toggle tournament status',
         );
@@ -261,7 +354,6 @@ export class TournamentService {
       } else if (error.status === 401) {
         throw new UnauthorizedException(error.message);
       }
-
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -307,9 +399,10 @@ export class TournamentService {
         throw new NotFoundException('User not found');
       }
 
-      if (user.role !== 'MANAGER' && user.role !== 'ADMIN') {
+      // Allow admins to delete any tournament, managers only their own
+      if (user.role !== 'ADMIN' && (user.role !== 'MANAGER' || tournament.ownerId !== userId)) {
         throw new UnauthorizedException(
-          'Only MANAGER or ADMIN can delete tournaments',
+          'User is not authorized to delete this tournament',
         );
       }
 
@@ -329,5 +422,3 @@ export class TournamentService {
     }
   }
 }
-
-

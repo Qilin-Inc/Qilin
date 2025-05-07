@@ -27,6 +27,9 @@ const Header = ({ enabled, card }: { enabled: boolean; card: string }) => {
           <a href="/new-dashboard" className="hover:text-gray-300 text-white">
             Matchmaking
           </a>
+          <a href="/tournaments" className="hover:text-gray-300 text-white">
+            Tournaments
+          </a>
         </nav>
         <div className="flex items-center space-x-2">
           <Button

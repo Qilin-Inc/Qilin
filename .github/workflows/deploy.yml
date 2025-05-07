@@ -17,14 +17,20 @@ jobs:
         with:
           node-version: '18'
           
-      - name: Install dependencies
-        run: npm install
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          npm install
       
-      - name: Run users service tests
-        run: npx jest users/users.service.spec.ts
-      
-      - name: Run tournament service tests
-        run: npx jest services/tournament.service.spec.ts
+      - name: Run users service test
+        run: |
+          cd backend
+          npm test -- src/users/users.service.spec.ts
+          
+      - name: Run tournament service test
+        run: |
+          cd backend
+          npm test -- src/services/tournament.service.spec.ts
 
   deploy:
     needs: test

@@ -18,7 +18,7 @@ jest.mock('src/helpers/prisma', () => ({
 import { Test, TestingModule } from '@nestjs/testing';
 import { TournamentService } from './tournament.service';
 import { NotFoundException, UnauthorizedException, ForbiddenException, InternalServerErrorException } from '@nestjs/common';
-import { CreateTournamentDto, JoinTournamentDto, ToggleTournamentStatusDto } from './tournament.dto';
+import { CreateTournamentDto, ToggleTournamentStatusDto } from './tournament.dto';
 import { prisma } from 'src/helpers/prisma';
 
 describe('TournamentService', () => {
@@ -38,6 +38,14 @@ describe('TournamentService', () => {
     email: 'manager1@example.com',
     name: 'Test Manager',
     role: 'MANAGER',
+    TournamentsJoinedIds: [],
+  };
+
+  const mockAdminUser = {
+    id: 'admin1',
+    email: 'admin1@example.com',
+    name: 'Test Admin',
+    role: 'ADMIN',
     TournamentsJoinedIds: [],
   };
 
@@ -62,12 +70,12 @@ describe('TournamentService', () => {
     ownerId: 'manager1',
   };
 
-  const mockJoinTournamentDto: JoinTournamentDto = {
-    userId: 'user1',
-  };
-
   const mockToggleStatusDto: ToggleTournamentStatusDto = {
     userId: 'manager1',
+  };
+
+  const mockWithdrawTournamentDto = {
+    userId: 'user1',
   };
 
   beforeEach(async () => {
@@ -86,18 +94,15 @@ describe('TournamentService', () => {
   });
 
   describe('makeTournamentAdmin', () => {
-    it('should make a user a tournament admin', async () => {
-      // Arrange
+    it('should make a user a tournament manager', async () => {
       (prisma.users.findUnique as jest.Mock).mockResolvedValue(mockUser);
       (prisma.users.update as jest.Mock).mockResolvedValue({
         ...mockUser,
         role: 'MANAGER',
       });
 
-      // Act
       const result = await service.makeTournamentAdmin('user1');
 
-      // Assert
       expect(prisma.users.findUnique).toHaveBeenCalledWith({
         where: { id: 'user1' },
       });
@@ -110,35 +115,28 @@ describe('TournamentService', () => {
     });
 
     it('should throw NotFoundException if user not found', async () => {
-      // Arrange
       (prisma.users.findUnique as jest.Mock).mockResolvedValue(null);
 
-      // Act & Assert
       await expect(service.makeTournamentAdmin('nonexistent')).rejects.toThrow(
-        NotFoundException,
+        NotFoundException
       );
     });
 
     it('should handle internal server errors', async () => {
-      // Arrange
       (prisma.users.findUnique as jest.Mock).mockRejectedValue(new Error('Database error'));
 
-      // Act & Assert
       await expect(service.makeTournamentAdmin('user1')).rejects.toThrow(
-        InternalServerErrorException,
+        InternalServerErrorException
       );
     });
   });
 
   describe('getTournamentManagers', () => {
     it('should return all tournament managers', async () => {
-      // Arrange
       (prisma.users.findMany as jest.Mock).mockResolvedValue([mockManagerUser]);
 
-      // Act
       const result = await service.getTournamentManagers();
 
-      // Assert
       expect(prisma.users.findMany).toHaveBeenCalledWith({
         where: { role: 'MANAGER' },
       });
@@ -147,54 +145,44 @@ describe('TournamentService', () => {
     });
 
     it('should throw NotFoundException if no managers found', async () => {
-      // Arrange
       (prisma.users.findMany as jest.Mock).mockResolvedValue(null);
 
-      // Act & Assert
       await expect(service.getTournamentManagers()).rejects.toThrow(
-        NotFoundException,
+        NotFoundException
       );
     });
   });
 
   describe('getAllTournaments', () => {
     it('should return all tournaments', async () => {
-      // Arrange
       (prisma.tournament.findMany as jest.Mock).mockResolvedValue([mockTournament]);
 
-      // Act
       const result = await service.getAllTournaments();
 
-      // Assert
       expect(prisma.tournament.findMany).toHaveBeenCalled();
       expect(result.success).toBe(true);
       expect(result.tournaments).toEqual([mockTournament]);
     });
 
     it('should handle internal server errors', async () => {
-      // Arrange
       (prisma.tournament.findMany as jest.Mock).mockRejectedValue(new Error('Database error'));
 
-      // Act & Assert
       await expect(service.getAllTournaments()).rejects.toThrow(
-        InternalServerErrorException,
+        InternalServerErrorException
       );
     });
   });
 
   describe('createTournament', () => {
     it('should create a tournament when user is a manager', async () => {
-      // Arrange
       (prisma.users.findUnique as jest.Mock).mockResolvedValue(mockManagerUser);
       (prisma.tournament.create as jest.Mock).mockResolvedValue({
         ...mockCreateTournamentDto,
         id: 'new-tournament',
       });
 
-      // Act
       const result = await service.createTournament(mockCreateTournamentDto);
 
-      // Assert
       expect(prisma.users.findUnique).toHaveBeenCalledWith({
         where: { id: mockCreateTournamentDto.ownerId },
       });
@@ -205,31 +193,46 @@ describe('TournamentService', () => {
       expect(result.tournament).toHaveProperty('id', 'new-tournament');
     });
 
-    it('should throw UnauthorizedException if user is not a manager', async () => {
-      // Arrange
+    it('should create a tournament when user is an admin', async () => {
+      const adminTournamentDto = { ...mockCreateTournamentDto, ownerId: 'admin1' };
+      (prisma.users.findUnique as jest.Mock).mockResolvedValue(mockAdminUser);
+      (prisma.tournament.create as jest.Mock).mockResolvedValue({
+        ...adminTournamentDto,
+        id: 'new-tournament',
+      });
+
+      const result = await service.createTournament(adminTournamentDto);
+
+      expect(prisma.users.findUnique).toHaveBeenCalledWith({
+        where: { id: 'admin1' },
+      });
+      expect(prisma.tournament.create).toHaveBeenCalledWith({
+        data: adminTournamentDto,
+      });
+      expect(result.success).toBe(true);
+      expect(result.tournament).toHaveProperty('id', 'new-tournament');
+    });
+
+    it('should throw UnauthorizedException if user is not a manager or admin', async () => {
       (prisma.users.findUnique as jest.Mock).mockResolvedValue(mockUser);
 
-      // Act & Assert
       await expect(service.createTournament(mockCreateTournamentDto)).rejects.toThrow(
-        UnauthorizedException,
+        UnauthorizedException
       );
       expect(prisma.tournament.create).not.toHaveBeenCalled();
     });
 
     it('should throw NotFoundException if user not found', async () => {
-      // Arrange
       (prisma.users.findUnique as jest.Mock).mockResolvedValue(null);
 
-      // Act & Assert
       await expect(service.createTournament(mockCreateTournamentDto)).rejects.toThrow(
-        NotFoundException,
+        NotFoundException
       );
     });
   });
 
   describe('updateTournament', () => {
     it('should update tournament details', async () => {
-      // Arrange
       const updateData = { name: 'Updated Tournament' };
       (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(mockTournament);
       (prisma.tournament.update as jest.Mock).mockResolvedValue({
@@ -237,10 +240,8 @@ describe('TournamentService', () => {
         ...updateData,
       });
 
-      // Act
       const result = await service.updateTournament('tournament1', updateData);
 
-      // Assert
       expect(prisma.tournament.findUnique).toHaveBeenCalledWith({
         where: { id: 'tournament1' },
       });
@@ -253,45 +254,48 @@ describe('TournamentService', () => {
     });
 
     it('should throw NotFoundException if tournament not found', async () => {
-      // Arrange
       (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(null);
 
-      // Act & Assert
       await expect(service.updateTournament('nonexistent', {})).rejects.toThrow(
-        NotFoundException,
+        NotFoundException
       );
     });
   });
 
-  describe('joinTournament', () => {
-    it('should allow a user to join a tournament', async () => {
-      // Arrange
-      const openTournament = {
+  describe('withdrawFromTournament', () => {
+    it('should allow a user to withdraw from a tournament', async () => {
+      const tournamentWithUser = {
         ...mockTournament,
-        playerIds: [' Márquez'],
+        playerIds: ['user1'],
+        status: 'OPEN',
       };
-      (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(openTournament);
-      (prisma.users.update as jest.Mock).mockResolvedValue({
+      (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(tournamentWithUser);
+      (prisma.users.findUnique as jest.Mock).mockResolvedValue({
         ...mockUser,
         TournamentsJoinedIds: ['tournament1'],
       });
+      (prisma.users.update as jest.Mock).mockResolvedValue({
+        ...mockUser,
+        TournamentsJoinedIds: [],
+      });
       (prisma.tournament.update as jest.Mock).mockResolvedValue({
-        ...openTournament,
-        playerIds: [...openTournament.playerIds, 'user1'],
+        ...tournamentWithUser,
+        playerIds: [],
       });
 
-      // Act
-      const result = await service.joinTournament('tournament1', mockJoinTournamentDto);
+      const result = await service.withdrawFromTournament('tournament1', mockWithdrawTournamentDto);
 
-      // Assert
       expect(prisma.tournament.findUnique).toHaveBeenCalledWith({
         where: { id: 'tournament1' },
+      });
+      expect(prisma.users.findUnique).toHaveBeenCalledWith({
+        where: { id: 'user1' },
       });
       expect(prisma.users.update).toHaveBeenCalledWith({
         where: { id: 'user1' },
         data: {
           TournamentsJoinedIds: {
-            push: 'tournament1',
+            set: [],
           },
         },
       });
@@ -299,7 +303,7 @@ describe('TournamentService', () => {
         where: { id: 'tournament1' },
         data: {
           playerIds: {
-            push: 'user1',
+            set: [],
           },
         },
       });
@@ -307,53 +311,69 @@ describe('TournamentService', () => {
     });
 
     it('should throw NotFoundException if tournament not found', async () => {
-      // Arrange
       (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(null);
 
-      // Act & Assert
-      await expect(service.joinTournament('nonexistent', mockJoinTournamentDto)).rejects.toThrow(
-        NotFoundException,
+      await expect(service.withdrawFromTournament('nonexistent', mockWithdrawTournamentDto)).rejects.toThrow(
+        NotFoundException
       );
     });
 
-    it('should throw UnauthorizedException if user already joined', async () => {
-      // Arrange
-      const tournamentWithUser = {
-        ...mockTournament,
-        playerIds: ['user1'],
-      };
-      (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(tournamentWithUser);
+    it('should throw UnauthorizedException if user has not joined', async () => {
+      (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(mockTournament);
 
-      // Act & Assert
-      await expect(service.joinTournament('tournament1', mockJoinTournamentDto)).rejects.toThrow(
-        UnauthorizedException,
+      await expect(service.withdrawFromTournament('tournament1', mockWithdrawTournamentDto)).rejects.toThrow(
+        UnauthorizedException
       );
     });
 
     it('should throw ForbiddenException if tournament is closed', async () => {
-      // Arrange
       const closedTournament = {
         ...mockTournament,
         status: 'CLOSED',
+        playerIds: ['user1'],
       };
       (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(closedTournament);
 
-      // Act & Assert
-      await expect(service.joinTournament('tournament1', mockJoinTournamentDto)).rejects.toThrow(
-        ForbiddenException,
+      await expect(service.withdrawFromTournament('tournament1', mockWithdrawTournamentDto)).rejects.toThrow(
+        ForbiddenException
+      );
+    });
+
+    it('should throw NotFoundException if user not found', async () => {
+      const tournamentWithUser = {
+        ...mockTournament,
+        playerIds: ['user1'],
+        status: 'OPEN',
+      };
+      (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(tournamentWithUser);
+      (prisma.users.findUnique as jest.Mock).mockResolvedValue(null);
+
+      await expect(service.withdrawFromTournament('tournament1', mockWithdrawTournamentDto)).rejects.toThrow(
+        NotFoundException
+      );
+    });
+
+    it('should throw ForbiddenException if user is manager or admin', async () => {
+      const tournamentWithUser = {
+        ...mockTournament,
+        playerIds: ['manager1'],
+        status: 'OPEN',
+      };
+      (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(tournamentWithUser);
+      (prisma.users.findUnique as jest.Mock).mockResolvedValue(mockManagerUser);
+
+      await expect(service.withdrawFromTournament('tournament1', { userId: 'manager1' })).rejects.toThrow(
+        ForbiddenException
       );
     });
   });
 
   describe('getTournamentStatus', () => {
     it('should return tournament status', async () => {
-      // Arrange
       (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(mockTournament);
 
-      // Act
       const result = await service.getTournamentStatus('tournament1');
 
-      // Assert
       expect(prisma.tournament.findUnique).toHaveBeenCalledWith({
         where: { id: 'tournament1' },
       });
@@ -362,36 +382,35 @@ describe('TournamentService', () => {
     });
 
     it('should throw NotFoundException if tournament not found', async () => {
-      // Arrange
       (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(null);
 
-      // Act & Assert
       await expect(service.getTournamentStatus('nonexistent')).rejects.toThrow(
-        NotFoundException,
+        NotFoundException
       );
     });
   });
 
   describe('toggleTournamentStatus', () => {
-    it('should toggle tournament status from OPEN to CLOSED', async () => {
-      // Arrange
+    it('should toggle tournament status from OPEN to CLOSED for owner', async () => {
       const openTournament = {
         ...mockTournament,
         status: 'OPEN',
         ownerId: 'manager1',
       };
       (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(openTournament);
+      (prisma.users.findUnique as jest.Mock).mockResolvedValue(mockManagerUser);
       (prisma.tournament.update as jest.Mock).mockResolvedValue({
         ...openTournament,
         status: 'CLOSED',
       });
 
-      // Act
       const result = await service.toggleTournamentStatus('tournament1', mockToggleStatusDto);
 
-      // Assert
       expect(prisma.tournament.findUnique).toHaveBeenCalledWith({
         where: { id: 'tournament1' },
+      });
+      expect(prisma.users.findUnique).toHaveBeenCalledWith({
+        where: { id: 'manager1' },
       });
       expect(prisma.tournament.update).toHaveBeenCalledWith({
         where: { id: 'tournament1' },
@@ -403,23 +422,21 @@ describe('TournamentService', () => {
       expect(result.status).toBe('CLOSED');
     });
 
-    it('should toggle tournament status from CLOSED to OPEN', async () => {
-      // Arrange
+    it('should toggle tournament status from CLOSED to OPEN for owner', async () => {
       const closedTournament = {
         ...mockTournament,
         status: 'CLOSED',
         ownerId: 'manager1',
       };
       (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(closedTournament);
+      (prisma.users.findUnique as jest.Mock).mockResolvedValue(mockManagerUser);
       (prisma.tournament.update as jest.Mock).mockResolvedValue({
         ...closedTournament,
         status: 'OPEN',
       });
 
-      // Act
       const result = await service.toggleTournamentStatus('tournament1', mockToggleStatusDto);
 
-      // Assert
       expect(prisma.tournament.update).toHaveBeenCalledWith({
         where: { id: 'tournament1' },
         data: {
@@ -429,40 +446,74 @@ describe('TournamentService', () => {
       expect(result.status).toBe('OPEN');
     });
 
-    it('should throw UnauthorizedException if user is not the owner', async () => {
-      // Arrange
+    it('should toggle tournament status for admin (non-owner)', async () => {
+      const openTournament = {
+        ...mockTournament,
+        status: 'OPEN',
+        ownerId: 'differentUser',
+      };
+      (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(openTournament);
+      (prisma.users.findUnique as jest.Mock).mockResolvedValue(mockAdminUser);
+      (prisma.tournament.update as jest.Mock).mockResolvedValue({
+        ...openTournament,
+        status: 'CLOSED',
+      });
+
+      const result = await service.toggleTournamentStatus('tournament1', { userId: 'admin1' });
+
+      expect(prisma.tournament.findUnique).toHaveBeenCalledWith({
+        where: { id: 'tournament1' },
+      });
+      expect(prisma.users.findUnique).toHaveBeenCalledWith({
+        where: { id: 'admin1' },
+      });
+      expect(prisma.tournament.update).toHaveBeenCalledWith({
+        where: { id: 'tournament1' },
+        data: {
+          status: 'CLOSED',
+        },
+      });
+      expect(result.success).toBe(true);
+      expect(result.status).toBe('CLOSED');
+    });
+
+    it('should throw UnauthorizedException if user is neither admin nor owner', async () => {
       const tournament = {
         ...mockTournament,
         ownerId: 'differentUser',
       };
       (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(tournament);
+      (prisma.users.findUnique as jest.Mock).mockResolvedValue(mockUser);
 
-      // Act & Assert
-      await expect(service.toggleTournamentStatus('tournament1', mockToggleStatusDto)).rejects.toThrow(
-        UnauthorizedException,
+      await expect(service.toggleTournamentStatus('tournament1', { userId: 'user1' })).rejects.toThrow(
+        UnauthorizedException
       );
     });
 
     it('should throw NotFoundException if tournament not found', async () => {
-      // Arrange
       (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(null);
 
-      // Act & Assert
       await expect(service.toggleTournamentStatus('nonexistent', mockToggleStatusDto)).rejects.toThrow(
-        NotFoundException,
+        NotFoundException
+      );
+    });
+
+    it('should throw NotFoundException if user not found', async () => {
+      (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(mockTournament);
+      (prisma.users.findUnique as jest.Mock).mockResolvedValue(null);
+
+      await expect(service.toggleTournamentStatus('tournament1', mockToggleStatusDto)).rejects.toThrow(
+        NotFoundException
       );
     });
   });
 
   describe('getTournamentById', () => {
     it('should return a tournament by id', async () => {
-      // Arrange
       (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(mockTournament);
 
-      // Act
       const result = await service.getTournamentById('tournament1');
 
-      // Assert
       expect(prisma.tournament.findUnique).toHaveBeenCalledWith({
         where: { id: 'tournament1' },
       });
@@ -471,27 +522,22 @@ describe('TournamentService', () => {
     });
 
     it('should throw NotFoundException if tournament not found', async () => {
-      // Arrange
       (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(null);
 
-      // Act & Assert
       await expect(service.getTournamentById('nonexistent')).rejects.toThrow(
-        NotFoundException,
+        NotFoundException
       );
     });
   });
 
   describe('deleteTournament', () => {
-    it('should delete a tournament if user is a manager', async () => {
-      // Arrange
+    it('should delete a tournament if user is a manager and owner', async () => {
       (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(mockTournament);
       (prisma.users.findUnique as jest.Mock).mockResolvedValue(mockManagerUser);
       (prisma.tournament.delete as jest.Mock).mockResolvedValue({ id: 'tournament1' });
 
-      // Act
       const result = await service.deleteTournament('tournament1', 'manager1');
 
-      // Assert
       expect(prisma.tournament.findUnique).toHaveBeenCalledWith({
         where: { id: 'tournament1' },
       });
@@ -505,55 +551,60 @@ describe('TournamentService', () => {
     });
 
     it('should delete a tournament if user is an admin', async () => {
-      // Arrange
-      const adminUser = {
-        ...mockUser,
-        role: 'ADMIN',
+      const nonOwnedTournament = {
+        ...mockTournament,
+        ownerId: 'differentUser',
       };
-      (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(mockTournament);
-      (prisma.users.findUnique as jest.Mock).mockResolvedValue(adminUser);
+      (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(nonOwnedTournament);
+      (prisma.users.findUnique as jest.Mock).mockResolvedValue(mockAdminUser);
       (prisma.tournament.delete as jest.Mock).mockResolvedValue({ id: 'tournament1' });
 
-      // Act
       const result = await service.deleteTournament('tournament1', 'admin1');
 
-      // Assert
       expect(prisma.tournament.delete).toHaveBeenCalledWith({
         where: { id: 'tournament1' },
       });
       expect(result.success).toBe(true);
     });
 
+    it('should throw UnauthorizedException if user is manager but not owner', async () => {
+      const nonOwnedTournament = {
+        ...mockTournament,
+        ownerId: 'differentUser',
+      };
+      (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(nonOwnedTournament);
+      (prisma.users.findUnique as jest.Mock).mockResolvedValue(mockManagerUser);
+
+      await expect(service.deleteTournament('tournament1', 'manager1')).rejects.toThrow(
+        UnauthorizedException
+      );
+      expect(prisma.tournament.delete).not.toHaveBeenCalled();
+    });
+
     it('should throw UnauthorizedException if user is not manager or admin', async () => {
-      // Arrange
       (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(mockTournament);
       (prisma.users.findUnique as jest.Mock).mockResolvedValue(mockUser);
 
-      // Act & Assert
       await expect(service.deleteTournament('tournament1', 'user1')).rejects.toThrow(
-        UnauthorizedException,
+        UnauthorizedException
       );
       expect(prisma.tournament.delete).not.toHaveBeenCalled();
     });
 
     it('should throw NotFoundException if tournament not found', async () => {
-      // Arrange
       (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(null);
 
-      // Act & Assert
       await expect(service.deleteTournament('nonexistent', 'manager1')).rejects.toThrow(
-        NotFoundException,
+        NotFoundException
       );
     });
 
     it('should throw NotFoundException if user not found', async () => {
-      // Arrange
       (prisma.tournament.findUnique as jest.Mock).mockResolvedValue(mockTournament);
       (prisma.users.findUnique as jest.Mock).mockResolvedValue(null);
 
-      // Act & Assert
       await expect(service.deleteTournament('tournament1', 'nonexistent')).rejects.toThrow(
-        NotFoundException,
+        NotFoundException
       );
     });
   });

@@ -19,17 +19,17 @@ jobs:
           
       - name: Install backend dependencies
         run: |
-          cd backend
+          cd apps/backend
           npm install
       
       - name: Run users service test
         run: |
-          cd backend
+          cd apps/backend
           npm test -- src/users/users.service.spec.ts
           
       - name: Run tournament service test
         run: |
-          cd backend
+          cd apps/backend
           npm test -- src/services/tournament.service.spec.ts
 
   deploy:

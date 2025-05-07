@@ -52,12 +52,12 @@ const App = () => {
             <div
               key={index}
               className={`flex ${
-                msg.sender === "user" ? "justify-end" : "justify-start"
+                msg === "user" ? "justify-end" : "justify-start"
               }`}
             >
               <div
                 className={`max-w-md p-3 rounded-xl ${
-                  msg.sender === "user"
+                  msg === "user"
                     ? "bg-blue-600 text-white"
                     : "bg-gray-700 text-white"
                 }`}

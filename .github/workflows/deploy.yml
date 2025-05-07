@@ -1,4 +1,4 @@
-name: Test and Deploy
+name: Deploy to DigitalOcean VPS
 
 on:
   push:
@@ -7,31 +7,28 @@ on:
 
 jobs:
   test:
-    name: Run Selected Unit Tests
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Set up Node.js
+      
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
-
+          node-version: '18'
+          
       - name: Install dependencies
-        run: npm install
-
-      - name: Run specific tests
-        run: |
-          npx jest apps/backend/src/services/users/users.service.spec.ts
-          npx jest apps/backend/src/services/tournament/tournament.service.spec.ts
+        run: npm ci
+      
+      - name: Run users service tests
+        run: npx jest users/users.service.spec.ts
+      
+      - name: Run tournament service tests
+        run: npx jest services/tournament.service.spec.ts
 
   deploy:
-    name: Deploy to DigitalOcean VPS
+    needs: test
     runs-on: ubuntu-latest
-    needs: test  # This ensures deployment only happens if tests pass
-
     steps:
       - name: Deploy to VPS
         uses: appleboy/ssh-action@master
@@ -42,9 +39,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd ~/Qilin
-            
             git pull origin main
-
             docker compose down
-
             docker compose up -d --build

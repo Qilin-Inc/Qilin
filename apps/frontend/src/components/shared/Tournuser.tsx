@@ -21,7 +21,29 @@ import { CalendarIcon, MapPin, Plus, Search } from "lucide-react";
 import { format } from "date-fns";
 import axios from "axios";
 import { CreateTournamentForm } from "./CreateTournament";
-const apiUrl = process.env.NEXT_PUBLIC_BACKEND
+import { Bar, Pie } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+const apiUrl = process.env.NEXT_PUBLIC_BACKEND;
 const api = axios.create({
   baseURL: apiUrl,
   headers: { "Content-Type": "application/json" },
@@ -131,6 +153,22 @@ export default function TournamentAdminDashboard() {
     }
   };
 
+  const handleWithdrawFromTournament = async (tournamentId: string) => {
+    if (!currentUserId) return false;
+    try {
+      const res = await api.post(`/tournament/withdraw/${tournamentId}`, {
+        userId: currentUserId,
+      });
+      if (res.data.success) {
+        fetchTournaments();
+        return true;
+      }
+      return false;
+    } catch (error) {
+      return false;
+    }
+  };
+
   const handleToggleStatus = async (
     tournamentId: string,
     currentStatus: "OPEN" | "CLOSED"
@@ -139,7 +177,12 @@ export default function TournamentAdminDashboard() {
 
     try {
       const tournament = tournaments.find((t) => t.id === tournamentId);
-      if (!tournament || tournament.ownerId !== currentUserId) return false;
+      if (!tournament) return false;
+
+      // Allow admins to toggle any tournament, others only if they own it
+      if (userRole !== "ADMIN" && tournament.ownerId !== currentUserId) {
+        return false;
+      }
 
       const newStatus = currentStatus === "OPEN" ? "CLOSED" : "OPEN";
       const res = await api.post(`/tournament/status/toggle/${tournamentId}`, {
@@ -197,11 +240,110 @@ export default function TournamentAdminDashboard() {
     if (currentUserId) fetchTournaments();
   }, [currentUserId]);
 
+  // Prepare data for charts (Admin only)
+  const totalTournaments = tournaments.length;
+
+  // Bar chart: Tournaments by owner
+  const tournamentsByOwner = tournaments.reduce((acc, tournament) => {
+    acc[tournament.ownerId] = (acc[tournament.ownerId] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const barChartData = {
+    labels: Object.keys(tournamentsByOwner),
+    datasets: [
+      {
+        label: "Tournaments Created",
+        data: Object.values(tournamentsByOwner),
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const barChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      title: {
+        display: true,
+        text: "Tournaments Created by Owner",
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "Number of Tournaments",
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: "Owner ID",
+        },
+      },
+    },
+  };
+
+  // Pie chart: Users joined per tournament
+  const pieChartData = {
+    labels: tournaments.map((t) => t.name),
+    datasets: [
+      {
+        label: "Players Joined",
+        data: tournaments.map((t) => t.playerIds?.length || 0),
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.6)",
+          "rgba(54, 162, 235, 0.6)",
+          "rgba(255, 206, 86, 0.6)",
+          "rgba(75, 192, 192, 0.6)",
+          "rgba(153, 102, 255, 0.6)",
+          "rgba(255, 159, 64, 0.6)",
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+          "rgba(255, 159, 64, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const pieChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      title: {
+        display: true,
+        text: "Players Joined per Tournament",
+      },
+    },
+  };
+
   const filteredTournaments = tournaments.filter(
     (t) =>
       t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       t.game.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // Determine dashboard title based on user role
+  const dashboardTitle =
+    userRole === "ADMIN"
+      ? "Tournament Admin Dashboard"
+      : userRole === "MANAGER"
+      ? "Tournament Manager Dashboard"
+      : "Tournament Dashboard";
 
   if (loading && tournaments.length === 0 && !currentUserId) {
     return (
@@ -258,7 +400,7 @@ export default function TournamentAdminDashboard() {
         )}
       </div>
 
-      <h2 className="text-2xl font-bold mb-6">All Tournaments</h2>
+      <h2 className="text-2xl font-bold mb-6">{dashboardTitle}</h2>
 
       {filteredTournaments.length === 0 ? (
         <div className="text-center py-10 text-muted-foreground">
@@ -323,54 +465,100 @@ export default function TournamentAdminDashboard() {
                   </div>
                 </CardContent>
                 <CardFooter className="p-4 pt-0 flex flex-col space-y-2">
-                  {!joined &&
-                    tournament.status === "OPEN" &&
-                    userRole === "USER" && (
-                      <Button
-                        variant="outline"
-                        className="w-full border-neutral-700 text-neutral-200 bg-neutral-600 hover:bg-neutral-500"
-                        onClick={() => handleJoinTournament(tournament.id)}
-                      >
-                        Join Tournament
-                      </Button>
-                    )}
+                  {userRole === "USER" && !joined && tournament.status === "OPEN" && (
+                    <Button
+                      variant="outline"
+                      className="w-full border-neutral-700 text-neutral-200 bg-neutral-600 hover:bg-neutral-500"
+                      onClick={() => handleJoinTournament(tournament.id)}
+                    >
+                      Join Tournament
+                    </Button>
+                  )}
 
-                  {isTournamentOwner && (
-                    <>
-                      <Button
-                        variant={
-                          tournament.status === "OPEN"
-                            ? "destructive"
-                            : "outline"
-                        }
-                        className="w-full"
-                        onClick={() =>
-                          handleToggleStatus(tournament.id, tournament.status)
-                        }
-                      >
-                        {tournament.status === "OPEN"
-                          ? "Close Tournament"
-                          : "Open Tournament"}
-                      </Button>
+                  {userRole === "USER" && joined && tournament.status === "OPEN" && (
+                    <Button
+                      variant="outline"
+                      className="w-full border-neutral-700 text-neutral-200 bg-red-600 hover:bg-red-700"
+                      onClick={() => handleWithdrawFromTournament(tournament.id)}
+                    >
+                      Withdraw from Tournament
+                    </Button>
+                  )}
 
-                      {(userRole === "MANAGER" || userRole === "ADMIN") && (
-                        <Button
-                          variant="destructive"
-                          className="w-full"
-                          onClick={() => {
-                            setTournamentToDelete(tournament);
-                            setDeleteDialogOpen(true);
-                          }}
-                        >
-                          Delete Tournament
-                        </Button>
-                      )}
-                    </>
+                  {(userRole === "ADMIN" || isTournamentOwner) && (
+                    <Button
+                      variant={
+                        tournament.status === "OPEN" ? "destructive" : "outline"
+                      }
+                      className="w-full"
+                      onClick={() =>
+                        handleToggleStatus(tournament.id, tournament.status)
+                      }
+                    >
+                      {tournament.status === "OPEN"
+                        ? "Close Tournament"
+                        : "Open Tournament"}
+                    </Button>
+                  )}
+
+                  {(userRole === "ADMIN" || (isTournamentOwner && userRole === "MANAGER")) && (
+                    <Button
+                      variant="destructive"
+                      className="w-full"
+                      onClick={() => {
+                        setTournamentToDelete(tournament);
+                        setDeleteDialogOpen(true);
+                      }}
+                    >
+                      Delete Tournament
+                    </Button>
                   )}
                 </CardFooter>
               </Card>
             );
           })}
+        </div>
+      )}
+
+      {/* Admin-only charts section */}
+      {userRole === "ADMIN" && (
+        <div className="mt-12">
+          <h3 className="text-xl font-bold mb-6">Tournament Statistics</h3>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Total Tournaments */}
+            {/* <Card className="bg-neutral-800 text-white border-neutral-700">
+              <CardHeader>
+                <h4 className="text-lg font-semibold">Total Tournaments</h4>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold">{totalTournaments}</p>
+              </CardContent>
+            </Card> */}
+
+            {/* Bar Chart: Tournaments by Owner */}
+            <Card className="bg-neutral-800 text-white border-neutral-700">
+              <CardHeader>
+                <h4 className="text-lg font-semibold">Tournaments by Owner</h4>
+              </CardHeader>
+              <CardContent>
+                <div className="h-96">
+                  <Bar data={barChartData} options={barChartOptions} />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Pie Chart: Players Joined per Tournament */}
+            {/* <Card className="bg-neutral-800 text-white border-neutral-700">
+              <CardHeader>
+                <h4 className="text-lg font-semibold">Players Joined per Tournament</h4>
+              </CardHeader>
+              <CardContent>
+                <div className="h-96">
+                  <Pie data={pieChartData} options={pieChartOptions} />
+                </div>
+              </CardContent>
+            </Card> */}
+          </div>
         </div>
       )}
 

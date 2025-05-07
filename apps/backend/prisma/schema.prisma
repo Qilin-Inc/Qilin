@@ -57,7 +57,7 @@ model Tournament {
   owner     users             @relation("OrganizedTournaments", fields: [ownerId], references: [id])
   ownerId   String            @db.ObjectId
   players   users[]           @relation("JoinedTournaments", fields: [playerIds], references: [id])
-  playerIds String[]          @unique @db.ObjectId
+  playerIds String[]          @db.ObjectId
   name      String
   game      String
   startDate DateTime

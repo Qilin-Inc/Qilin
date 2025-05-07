@@ -21,7 +21,8 @@ import { CalendarIcon, MapPin, Plus, Search } from "lucide-react";
 import { format } from "date-fns";
 import axios from "axios";
 import { CreateTournamentForm } from "./CreateTournament";
-const apiUrl = process.env.NEXT_PUBLIC_BACKEND
+
+const apiUrl = process.env.NEXT_PUBLIC_BACKEND;
 const api = axios.create({
   baseURL: apiUrl,
   headers: { "Content-Type": "application/json" },
@@ -131,6 +132,22 @@ export default function TournamentAdminDashboard() {
     }
   };
 
+  const handleWithdrawFromTournament = async (tournamentId: string) => {
+    if (!currentUserId) return false;
+    try {
+      const res = await api.post(`/tournament/withdraw/${tournamentId}`, {
+        userId: currentUserId,
+      });
+      if (res.data.success) {
+        fetchTournaments();
+        return true;
+      }
+      return false;
+    } catch (error) {
+      return false;
+    }
+  };
+
   const handleToggleStatus = async (
     tournamentId: string,
     currentStatus: "OPEN" | "CLOSED"
@@ -139,7 +156,12 @@ export default function TournamentAdminDashboard() {
 
     try {
       const tournament = tournaments.find((t) => t.id === tournamentId);
-      if (!tournament || tournament.ownerId !== currentUserId) return false;
+      if (!tournament) return false;
+
+      // Allow admins to toggle any tournament, others only if they own it
+      if (userRole !== "ADMIN" && tournament.ownerId !== currentUserId) {
+        return false;
+      }
 
       const newStatus = currentStatus === "OPEN" ? "CLOSED" : "OPEN";
       const res = await api.post(`/tournament/status/toggle/${tournamentId}`, {
@@ -248,7 +270,7 @@ export default function TournamentAdminDashboard() {
                 Create Tournament
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-neutral-900 text-white">
+            <DialogContent className="bg-blue-600 text-white">
               <DialogHeader>
                 <DialogTitle>Create Tournament</DialogTitle>
               </DialogHeader>
@@ -323,49 +345,53 @@ export default function TournamentAdminDashboard() {
                   </div>
                 </CardContent>
                 <CardFooter className="p-4 pt-0 flex flex-col space-y-2">
-                  {!joined &&
-                    tournament.status === "OPEN" &&
-                    userRole === "USER" && (
-                      <Button
-                        variant="outline"
-                        className="w-full border-neutral-700 text-neutral-200 bg-neutral-600 hover:bg-neutral-500"
-                        onClick={() => handleJoinTournament(tournament.id)}
-                      >
-                        Join Tournament
-                      </Button>
-                    )}
+                  {userRole === "USER" && !joined && tournament.status === "OPEN" && (
+                    <Button
+                      variant="outline"
+                      className="w-full border-neutral-700 text-neutral-200 bg-neutral-600 hover:bg-neutral-500"
+                      onClick={() => handleJoinTournament(tournament.id)}
+                    >
+                      Join Tournament
+                    </Button>
+                  )}
 
-                  {isTournamentOwner && (
-                    <>
-                      <Button
-                        variant={
-                          tournament.status === "OPEN"
-                            ? "destructive"
-                            : "outline"
-                        }
-                        className="w-full"
-                        onClick={() =>
-                          handleToggleStatus(tournament.id, tournament.status)
-                        }
-                      >
-                        {tournament.status === "OPEN"
-                          ? "Close Tournament"
-                          : "Open Tournament"}
-                      </Button>
+                  {userRole === "USER" && joined && tournament.status === "OPEN" && (
+                    <Button
+                      variant="outline"
+                      className="w-full border-neutral-700 text-neutral-200 bg-red-600 hover:bg-red-700"
+                      onClick={() => handleWithdrawFromTournament(tournament.id)}
+                    >
+                      Withdraw from Tournament
+                    </Button>
+                  )}
 
-                      {(userRole === "MANAGER" || userRole === "ADMIN") && (
-                        <Button
-                          variant="destructive"
-                          className="w-full"
-                          onClick={() => {
-                            setTournamentToDelete(tournament);
-                            setDeleteDialogOpen(true);
-                          }}
-                        >
-                          Delete Tournament
-                        </Button>
-                      )}
-                    </>
+                  {(userRole === "ADMIN" || isTournamentOwner) && (
+                    <Button
+                      variant={
+                        tournament.status === "OPEN" ? "destructive" : "outline"
+                      }
+                      className="w-full"
+                      onClick={() =>
+                        handleToggleStatus(tournament.id, tournament.status)
+                      }
+                    >
+                      {tournament.status === "OPEN"
+                        ? "Close Tournament"
+                        : "Open Tournament"}
+                    </Button>
+                  )}
+
+                  {(userRole === "ADMIN" || (isTournamentOwner && userRole === "MANAGER")) && (
+                    <Button
+                      variant="destructive"
+                      className="w-full"
+                      onClick={() => {
+                        setTournamentToDelete(tournament);
+                        setDeleteDialogOpen(true);
+                      }}
+                    >
+                      Delete Tournament
+                    </Button>
                   )}
                 </CardFooter>
               </Card>

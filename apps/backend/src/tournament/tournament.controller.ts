@@ -74,4 +74,9 @@ export class TournamentController {
     console.log(`[Nest] DELETE /tournament/delete/${id}`);
     return this.tournamentService.deleteTournament(id, userId);
   }
+
+  @Post('withdraw/:id')
+async withdrawFromTournament(@Param('id') id: string, @Body() body: any) {
+  return this.tournamentService.withdrawFromTournament(id, body);
+}
 }

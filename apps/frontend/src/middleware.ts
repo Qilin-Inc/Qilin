@@ -14,10 +14,11 @@ export async function middleware(request: NextRequest) {
   if (!isPublic && !token) {
     return NextResponse.redirect(new URL("/login", request.nextUrl));
   }
+
 }
 
 export const config = {
-  matcher: ["/profile", "/login", "/signup", "/verifyemail", "/"],
+  matcher: ["/profile", "/login", "/signup", "/verifyemail", "/", "/banned"],
 };
 
 // const auth = request.cookies.get("adminAuth");

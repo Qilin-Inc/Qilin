@@ -1,6 +1,7 @@
 import {
   ConflictException,
   ForbiddenException,
+  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -46,6 +47,9 @@ export class UsersService {
       };
     } catch (error: any) {
       console.error('from user service', error);
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -110,6 +114,9 @@ export class UsersService {
       }
     } catch (error: any) {
       console.error('from user service', error);
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -124,6 +131,9 @@ export class UsersService {
       };
     } catch (error: any) {
       console.error('from user service', error);
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -182,18 +192,16 @@ export class UsersService {
         .slice(0, 4);
       closestUsers = closestUsers.filter((user) => user.userId !== id);
 
-      // const updatedUsers = closestUsers.map(({ distance, ...rest }) => rest);
-      const updatedUsers = await Promise.all(
-        closestUsers.map(async ({ distance, ...rest }) => {
-          const user = await prisma.users.findUnique({
-            where: { id: rest.userId },
-          });
-          return {
-            name: user.username,
-            ...rest,
-          };
-        }),
-      );
+      const updatedUsers = [];
+      for (const { distance, ...rest } of closestUsers) {
+        const user = await prisma.users.findUnique({
+          where: { id: rest.userId },
+        });
+        updatedUsers.push({
+          name: user.username,
+          ...rest,
+        });
+      }
 
       return {
         message: 'Matchmaking successful',
@@ -202,7 +210,10 @@ export class UsersService {
       };
     } catch (error: any) {
       console.error('Matchmaking Error: \n', error);
-      throw new InternalServerErrorException();
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(error.message);
     }
   }
 

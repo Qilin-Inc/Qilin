@@ -9,7 +9,7 @@ export class CreateTournamentDto {
 }
 
 export class JoinTournamentDto {
-  playerId: string;
+  userId: string;
 }
 
 export class ToggleTournamentStatusDto {

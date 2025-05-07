@@ -138,18 +138,29 @@ export class UsersService {
     }
   }
 
-  async banUser(id: string, adminId: string) {
+  async banUser(id: string) {
     try {
-      const admin = await prisma.users.findUnique({ where: { id: adminId } });
-      if (admin.role !== 'ADMIN') {
-        throw new UnauthorizedException(
-          'User not authorized to perform this action',
-        );
+      // const admin = await prisma.users.findUnique({ where: { id: adminId } });
+      // if (admin.role !== 'ADMIN') {
+      //   throw new UnauthorizedException(
+      //     'User not authorized to perform this action',
+      //   );
+      // }
+      
+      // Toggle the ban status of the user
+
+      const user = await prisma.users.findUnique({
+        where: { id },
+      });
+
+      if (!user) {
+        throw new NotFoundException('User not found');
       }
-      const user = await prisma.users.update({
+
+      await prisma.users.update({
         where: { id },
         data: {
-          isBanned: true,
+          isBanned: !user.isBanned,
         },
       });
       if (!user) {
@@ -166,6 +177,131 @@ export class UsersService {
         throw new NotFoundException(error.message);
       } else if (error.status === 401) {
         throw new UnauthorizedException(error.message);
+      }
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+
+  async deleteUser(id: string) {
+    try {
+      const user = await prisma.users.findUnique({
+        where: { id },
+      });
+      
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      await prisma.valorantUser.deleteMany({
+        where: { userId: id },
+      });
+
+      const response = await prisma.users.delete({
+        where: { id },
+      });
+
+      return {
+        message: 'User deleted successfully',
+        success: true,
+        response 
+      };
+    } catch (error: any) {
+      console.error('from user service', error);
+      if (error.status === 404) {
+        throw new NotFoundException(error.message);
+      }
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async promoteUser(id: string) {
+    try {
+      const user = await prisma.users.findUnique({
+        where: { id },
+      });
+
+      let updatedUser;
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      if (user.role === 'ADMIN') {
+        throw new ConflictException('User is already an ADMIN');
+      }
+
+      if (user.role === 'MANAGER') {
+        updatedUser = await prisma.users.update({
+          where: { id },
+          data: {
+            role: 'ADMIN',
+          },
+        });
+      }
+
+      if (user.role === 'USER') {
+        updatedUser = await prisma.users.update({
+          where: { id },
+          data: {
+            role: 'MANAGER',
+          },
+        });
+      }
+
+      return {
+        message: 'User promoted to ADMIN successfully',
+        success: true,
+        updatedUser 
+      };
+    } catch (error: any) {
+      console.error('from user service', error);
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async demoteUser(id: string) {
+    try {
+      const user = await prisma.users.findUnique({
+        where: { id },
+      });
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      let updatedUser;
+
+      if (user.role === 'USER') {
+        throw new ConflictException('User is already a regular USER');
+      } else if (user.role === 'ADMIN') {
+        updatedUser = await prisma.users.update({
+          where: { id },
+          data: {
+            role: 'MANAGER',
+          },
+        });
+      } else {
+        updatedUser = await prisma.users.update({
+          where: { id },
+          data: {
+            role: 'USER',
+          },
+        });
+      }
+
+      return {
+        message: 'User demoted to regular USER successfully',
+        success: true,
+        updatedUser
+      };
+    } catch (error: any) {
+      console.error('from user service', error);
+      if (error instanceof HttpException) {
+        throw error;
       }
       throw new InternalServerErrorException(error.message);
     }

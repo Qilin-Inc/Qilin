@@ -6,16 +6,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-const chartData = [
-  { month: "June", user: 18, tournament: 8 },
-  { month: "July", user: 30, tournament: 22 },
-  { month: "August", user: 23, tournament: 12 },
-  { month: "September", user: 7, tournament: 9 },
-  { month: "October", user: 20, tournament: 13 },
-  { month: "November", user: 24, tournament: 10 },
-  { month: "December", user: 21, tournament: 14 },
-  { month: "January", user: 14, tournament: 4 },
-]
 
 const chartConfig = {
   user: {
@@ -28,7 +18,17 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export default function AreaChartGradient() {
+export default function AreaChartGradient({user, tournament}: {user: number, tournament: number}) {
+  const chartData = [
+    { month: "June", user: 18, tournament: 8 },
+    { month: "July", user: 30, tournament: 22 },
+    { month: "August", user: 23, tournament: 12 },
+    { month: "September", user: 7, tournament: 9 },
+    { month: "October", user: 20, tournament: 13 },
+    { month: "November", user: 24, tournament: 10 },
+    { month: "December", user: 21, tournament: 14 },
+    { month: "January", user, tournament },
+  ]
   return (
     <ChartContainer config={chartConfig}>
       <AreaChart

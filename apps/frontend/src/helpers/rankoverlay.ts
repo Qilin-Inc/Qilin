@@ -61,6 +61,6 @@ export function getRankImage(rank: string): string {
     return rankImages[lowerCaseRank];
   } else {
     console.warn(`Rank "${rank}" does not exist.`);
-    return "https://example.com/images/ranks/default.png"; // Fallback image
+    return "https://raw.githubusercontent.com/haxgun/Valory/refs/heads/main/public/img/ranks/3.webp"; // Fallback image
   }
 }

@@ -6,8 +6,19 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('dashboard')
 export class DashboardController {
     constructor(private readonly dashboardService: DashboardService) {}
+
     @Get("/user/:userId")
     async getDashboard(@Param("userId") userId: string) {
         return this.dashboardService.getDashboard(userId);
+    }
+
+    @Get("/info")
+    async getInfo() {
+        return this.dashboardService.getInfo();
+    }
+
+    @Get("/users")
+    async getUsers() {
+        return this.dashboardService.getUsers();
     }
 }

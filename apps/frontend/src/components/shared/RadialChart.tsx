@@ -26,7 +26,7 @@ export default function RadialChart({numbers, tag, rotation} : {numbers: number,
   return (
     <ChartContainer
       config={chartConfig}
-      className="mx-auto aspect-square max-h-[150px] flex-shrink-0 w-full h-full"
+      className="mx-auto aspect-square max-h-[150px] max-w-[150px] flex-shrink-0 w-full h-full"
     >
       <RadialBarChart
         data={chartData}

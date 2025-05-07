@@ -15,10 +15,6 @@ export class ConnectUserDto {
   tag: string;
 }
 
-export class BanUserDto {
-  adminId: string;
-}
-
 export class RateUserDto {
   userId: string;
   rating: number;

@@ -30,7 +30,7 @@ jobs:
       - name: Run tournament service test
         run: |
           cd apps/backend
-          npm test -- src/services/tournament.service.spec.ts
+          npm test -- src/tournament/tournament.service.spec.ts
 
   deploy:
     needs: test

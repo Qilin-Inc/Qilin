@@ -25,7 +25,7 @@ export default function LoginPage() {
 
       // Redirect after a short delay to show the success toast
       setTimeout(() => {
-        router.push("/dashboard"); // Redirect to a protected page like dashboard
+        router.push("/"); // Redirect to a protected page like dashboard
       }, 500);
     } catch (error: any) {
       toast.error(
